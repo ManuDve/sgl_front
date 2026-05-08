@@ -1,17 +1,220 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="SGL | Asesoría legal a tu alcance">
+  <header class="bg-sgl-black/95 backdrop-blur border-b border-sgl-gold/20">
+    <div
+      class="max-w-6xl mx-auto px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4"
+    >
+      <a href="#inicio" class="font-serif text-xl text-sgl-white">
+        S<span class="text-sgl-gold">G</span>L
+      </a>
+      <nav class="flex items-center gap-4 md:gap-6 text-sm md:text-base">
+        <a
+          href="#inicio"
+          class="text-sgl-gray-mid hover:text-sgl-gold transition-colors"
+          >Inicio</a
+        >
+        <a
+          href="#servicios"
+          class="text-sgl-gray-mid hover:text-sgl-gold transition-colors"
+          >Servicios</a
+        >
+        <a
+          href="#agendar"
+          class="text-sgl-gray-mid hover:text-sgl-gold transition-colors"
+          >Agendar</a
+        >
+      </nav>
+      <a
+        href="#agendar"
+        class="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-4 py-2 rounded transition-colors duration-200"
+      >
+        Agendar
+      </a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="py-16 md:py-24">
+      <div
+        class="max-w-6xl mx-auto px-4 md:px-8 grid gap-10 lg:grid-cols-2 items-center"
+      >
+        <div>
+          <p
+            class="font-sans text-sm text-sgl-gray-mid tracking-wide uppercase"
+          >
+            Estudio jurídico
+          </p>
+          <h1
+            class="font-serif text-4xl md:text-6xl font-bold text-sgl-white mt-3"
+          >
+            Asesoría legal clara, rápida y humana
+          </h1>
+          <p class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-4">
+            Te ayudamos a tomar decisiones informadas con acompañamiento
+            profesional en cada etapa.
+          </p>
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <a
+              href="#agendar"
+              class="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
+            >
+              Agendar consulta
+            </a>
+            <a
+              href="#servicios"
+              class="border border-sgl-gold text-sgl-gold hover:bg-sgl-gold hover:text-sgl-black font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
+            >
+              Ver servicios
+            </a>
+          </div>
+        </div>
+        <div
+          class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6 md:p-8"
+        >
+          <div class="border-t border-sgl-gold/30 pt-6">
+            <p class="font-serif text-xl font-semibold text-sgl-white">
+              Tu caso, en buenas manos
+            </p>
+            <p
+              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-3"
+            >
+              Analizamos tu situación y proponemos acciones concretas para
+              avanzar con seguridad.
+            </p>
+            <div class="mt-5 flex items-center gap-3 text-sgl-gray-mid">
+              <span class="text-sgl-gold font-semibold">+10 años</span>
+              <span>de experiencia combinada</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicios" class="py-16 md:py-24 border-t border-sgl-gold/30">
+      <div class="max-w-6xl mx-auto px-4 md:px-8">
+        <h2
+          class="font-serif text-3xl md:text-4xl font-semibold text-sgl-white"
+        >
+          Propuesta de valor
+        </h2>
+        <p class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-3">
+          Compromiso real con tus objetivos, con un servicio cercano y
+          transparente.
+        </p>
+        <div class="mt-10 grid gap-6 md:gap-8 md:grid-cols-3">
+          <div
+            class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6"
+          >
+            <div
+              class="h-10 w-10 rounded-full bg-sgl-gold flex items-center justify-center"
+            >
+              <svg
+                class="h-5 w-5 text-sgl-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3l4 7-4 2-4-2 4-7z"></path>
+                <path d="M8 12l-3 9h14l-3-9"></path>
+              </svg>
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-sgl-white mt-4">
+              Experiencia
+            </h3>
+            <p
+              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-2"
+            >
+              Casos reales en civil, laboral y familia, con mirada estratégica.
+            </p>
+          </div>
+          <div
+            class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6"
+          >
+            <div
+              class="h-10 w-10 rounded-full bg-sgl-gold flex items-center justify-center"
+            >
+              <svg
+                class="h-5 w-5 text-sgl-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z"></path>
+              </svg>
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-sgl-white mt-4">
+              Confianza
+            </h3>
+            <p
+              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-2"
+            >
+              Información clara, pasos definidos y acompañamiento constante.
+            </p>
+          </div>
+          <div
+            class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6"
+          >
+            <div
+              class="h-10 w-10 rounded-full bg-sgl-gold flex items-center justify-center"
+            >
+              <svg
+                class="h-5 w-5 text-sgl-black"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12l5 5L20 6"></path>
+              </svg>
+            </div>
+            <h3 class="font-serif text-xl font-semibold text-sgl-white mt-4">
+              Resultados
+            </h3>
+            <p
+              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-2"
+            >
+              Acciones eficientes para proteger tus derechos y tu tiempo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agendar" class="py-16 md:py-24">
+      <div class="max-w-6xl mx-auto px-4 md:px-8">
+        <div
+          class="bg-sgl-gold text-sgl-black rounded-lg p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+        >
+          <div>
+            <p class="font-serif text-2xl md:text-3xl font-semibold">
+              Agenda tu consulta hoy
+            </p>
+            <p class="font-sans text-base text-sgl-black leading-relaxed mt-2">
+              Recibe orientación legal con un equipo cercano y comprometido.
+            </p>
+          </div>
+          <a
+            href="/agendar"
+            class="bg-sgl-black hover:bg-sgl-gray text-sgl-white font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
+          >
+            Agendar consulta
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

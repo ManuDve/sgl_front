@@ -1,0 +1,21 @@
+---
+import "../styles/global.css";
+
+const { title = "SGL" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
+		/>
+		<title>{title}</title>
+	</head>
+	<body class="bg-sgl-black text-sgl-white">
+		<slot />
+	</body>
+</html>
