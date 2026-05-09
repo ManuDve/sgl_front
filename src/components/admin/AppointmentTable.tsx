@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import AppointmentDetail from "./AppointmentDetail";
 
 interface AppointmentSummary {
   id: number;
@@ -43,6 +44,7 @@ export default function AppointmentTable() {
   const [appointments, setAppointments] = useState<AppointmentSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("sgl_token");
@@ -96,7 +98,10 @@ export default function AppointmentTable() {
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-sgl-gold/10">
+    <>
+      <AppointmentDetail id={selectedId} onClose={() => setSelectedId(null)} />
+
+      <div className="overflow-x-auto rounded-lg border border-sgl-gold/10">
       <table className="w-full font-sans text-sm">
         <thead>
           <tr className="bg-sgl-gray border-b border-sgl-gold/10">
@@ -114,7 +119,8 @@ export default function AppointmentTable() {
           {appointments.map((apt, i) => (
             <tr
               key={apt.id}
-              className={`border-b border-sgl-gold/10 transition-colors duration-150 hover:bg-sgl-gold/5 ${
+              onClick={() => setSelectedId(apt.id)}
+              className={`border-b border-sgl-gold/10 transition-colors duration-150 cursor-pointer hover:bg-sgl-gold/10 ${
                 i % 2 === 0 ? "bg-sgl-black" : "bg-sgl-gray/50"
               }`}
             >
@@ -151,5 +157,6 @@ export default function AppointmentTable() {
         </tbody>
       </table>
     </div>
+    </>
   );
 }
