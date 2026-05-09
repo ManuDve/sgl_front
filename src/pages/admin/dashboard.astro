@@ -1,7 +1,20 @@
 ---
 import AdminLayout from "../../layouts/AdminLayout.astro";
+import DashboardKPIs from "../../components/admin/DashboardKPIs";
+import AppointmentTable from "../../components/admin/AppointmentTable";
 ---
 
 <AdminLayout title="Dashboard — SGL Admin">
-  <p class="text-sgl-gray-mid">Dashboard — próximamente (SGL-044).</p>
+
+  <section class="mb-10">
+    <DashboardKPIs client:load />
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <h2 class="font-serif text-2xl font-semibold text-sgl-white">
+      Agendamientos pendientes
+    </h2>
+    <AppointmentTable client:load />
+  </section>
+
 </AdminLayout>
