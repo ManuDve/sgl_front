@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LoginForm from "../../components/admin/LoginForm";
+---
+
+<BaseLayout title="Iniciar sesión — SGL Admin">
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <LoginForm client:load />
+  </main>
+</BaseLayout>

@@ -7,6 +7,14 @@ import react from '@astrojs/react';
 export default defineConfig({
     vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      esbuildOptions: {
+        define: {
+          'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
+        },
+      },
+    },
   },
   integrations: [react()]
 });
