@@ -3,6 +3,7 @@ import Stepper from "./Stepper";
 import PasoServicio from "./PasoServicio";
 import PasoDatos, { type DatosCliente } from "./PasoDatos";
 import PasoFechaHora, { type FechaHoraSeleccion } from "./PasoFechaHora";
+import PasoResumen from "./PasoResumen";
 
 interface Servicio {
   id: number;
@@ -31,7 +32,11 @@ export default function AgendarFlow() {
 
   function handleFechaHoraContinuar(fh: FechaHoraSeleccion) {
     setFechaHora(fh);
-    // setPaso(4) — se activa al implementar SGL-023 AG-RESUMEN
+    setPaso(4);
+  }
+
+  function handleConfirmar() {
+    // SGL-024 AG-IDEXTERNO: aquí irá el POST /api/appointments
   }
 
   return (
@@ -57,6 +62,16 @@ export default function AgendarFlow() {
           inicial={fechaHora ?? undefined}
           onContinuar={handleFechaHoraContinuar}
           onAtras={() => setPaso(2)}
+        />
+      )}
+
+      {paso === 4 && servicio && datos && fechaHora && (
+        <PasoResumen
+          servicio={servicio}
+          datos={datos}
+          fechaHora={fechaHora}
+          onConfirmar={handleConfirmar}
+          onAtras={() => setPaso(3)}
         />
       )}
     </div>
