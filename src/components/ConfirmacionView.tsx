@@ -36,6 +36,7 @@ export default function ConfirmacionView() {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState("");
   const [visible, setVisible] = useState(false);
+  const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -51,6 +52,13 @@ export default function ConfirmacionView() {
         setTimeout(() => setVisible(true), 60);
       });
   }, []);
+
+  function handleCopiar() {
+    navigator.clipboard.writeText(apt?.idExterno ?? "").then(() => {
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2500);
+    });
+  }
 
   // ── Loading skeleton ──────────────────────────────────────────
   if (loading) {
@@ -176,12 +184,95 @@ export default function ConfirmacionView() {
       <div style={transition(600)}>
         <span className="inline-flex items-center gap-2 bg-sgl-gold/15 border border-sgl-gold/30 text-sgl-gold font-sans text-sm px-4 py-2 rounded-full">
           <span className="w-2 h-2 rounded-full bg-sgl-gold animate-pulse" />
-          Pendiente de pago — recibirás instrucciones por correo
+          Pendiente de pago — tienes 24 horas hábiles
         </span>
       </div>
 
+      {/* ── Card instrucciones de pago ── */}
+      <div className="w-full" style={transition(700)}>
+        <div className="rounded-xl border border-sgl-gold bg-sgl-gray overflow-hidden">
+
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-sgl-gold/20 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-sgl-gold/15 flex items-center justify-center shrink-0">
+              <svg className="w-4 h-4 text-sgl-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <path d="M2 10h20"/>
+              </svg>
+            </div>
+            <div>
+              <p className="font-sans text-sm font-semibold text-sgl-white">Instrucciones de pago</p>
+              <p className="font-sans text-xs text-sgl-gray-mid">Transferencia bancaria — plazo 24 horas hábiles</p>
+            </div>
+          </div>
+
+          {/* Filas de datos bancarios */}
+          <div className="px-6 py-4 flex flex-col gap-0">
+            {[
+              { label: "Banco",         value: "Banco Estado" },
+              { label: "Tipo de cuenta",value: "Cuenta corriente" },
+              { label: "Número",        value: "123456789" },
+              { label: "RUT",           value: "76.XXX.XXX-X" },
+              { label: "Nombre",        value: "Estudio Jurídico SGL" },
+              { label: "Monto exacto",  value: formatMonto(apt.monto), highlight: true },
+              { label: "Referencia",    value: apt.idExterno, highlight: true },
+            ].map(({ label, value, highlight }, i, arr) => (
+              <div
+                key={label}
+                className={`flex items-center justify-between py-2.5 ${i < arr.length - 1 ? "border-b border-sgl-gold/10" : ""}`}
+              >
+                <span className="font-sans text-xs text-sgl-gray-mid shrink-0">{label}</span>
+                <span className={`font-sans text-sm font-medium ${highlight ? "text-sgl-gold" : "text-sgl-white"}`}>
+                  {value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Aviso plazo */}
+          <div className="mx-6 mb-5 bg-sgl-gold/10 border border-sgl-gold/20 rounded-lg px-4 py-3">
+            <p className="font-sans text-xs text-sgl-gold leading-relaxed">
+              <strong>Importante:</strong> realiza la transferencia dentro de las próximas 24 horas hábiles.
+              Usa el ID de tu cita como referencia/asunto para que podamos identificar tu pago.
+            </p>
+          </div>
+
+          {/* Botón copiar ID */}
+          <div style={{ padding: "8px 24px 40px 24px" }}>
+            <button
+              type="button"
+              onClick={handleCopiar}
+              className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold rounded-lg transition-all duration-200"
+              style={{
+                padding: "12px",
+                background: copiado ? "var(--color-sgl-gold)" : "transparent",
+                color:      copiado ? "var(--color-sgl-black)" : "var(--color-sgl-gold)",
+                border:     `1px solid ${copiado ? "var(--color-sgl-gold)" : "rgba(201,168,76,0.5)"}`,
+              }}
+            >
+              {copiado ? (
+                <>
+                  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8l3 3 7-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  ¡Copiado!
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                    <rect x="5" y="5" width="8" height="9" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+                    <path d="M3 11V3h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                  </svg>
+                  Copiar ID de cita ({apt.idExterno})
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Volver al inicio */}
-      <div style={transition(700)}>
+      <div style={transition(800)}>
         <a
           href="/"
           className="font-sans text-sm text-sgl-gray-mid hover:text-sgl-gold transition-colors duration-200 inline-flex items-center gap-1.5"
