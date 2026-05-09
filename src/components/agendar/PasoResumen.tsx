@@ -127,6 +127,33 @@ export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, o
         </div>
       </div>
 
+      {/* SGL-078 — Métodos de pago */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-2 bg-sgl-gray border border-sgl-gold/30 text-sgl-white font-sans text-sm px-4 py-2 rounded-full">
+            <svg className="w-4 h-4 text-sgl-gold shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>
+            </svg>
+            Pago por transferencia bancaria
+          </span>
+        </div>
+        <p className="font-sans text-xs text-sgl-gray-mid pl-1">
+          Próximamente: pago con tarjeta de crédito/débito.
+        </p>
+      </div>
+
+      {/* SGL-031 — Política de cancelación */}
+      <div className="flex items-start gap-3 bg-sgl-gray border border-sgl-gray-light/10 rounded-xl px-5 py-4">
+        <svg className="w-4 h-4 text-sgl-gold shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+        </svg>
+        <p className="font-sans text-xs text-sgl-gray-mid leading-relaxed">
+          <span className="text-sgl-white font-medium">Política de cancelación:</span>{" "}
+          cancelaciones realizadas con más de 24 horas de anticipación no tienen costo.
+          Reagendamientos sujetos a disponibilidad.
+        </p>
+      </div>
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-4 text-red-400 font-sans text-sm">
           {error}

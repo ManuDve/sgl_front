@@ -103,6 +103,43 @@ function formatPrecio(precio: number): string {
   }).format(precio);
 }
 
+// ─── Checkbox de consentimiento ──────────────────────────────
+
+interface CheckboxProps {
+  id: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  children: React.ReactNode;
+}
+
+function CheckboxField({ id, checked, onChange, children }: CheckboxProps) {
+  return (
+    <label htmlFor={id} className="flex items-start gap-3 cursor-pointer group">
+      <button
+        id={id}
+        type="button"
+        role="checkbox"
+        aria-checked={checked}
+        onClick={() => onChange(!checked)}
+        className="shrink-0 mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-sgl-gold"
+        style={{
+          background: checked ? "var(--color-sgl-gold)" : "transparent",
+          borderColor: checked ? "var(--color-sgl-gold)" : "rgba(201,168,76,0.4)",
+        }}
+      >
+        {checked && (
+          <svg className="w-3 h-3 text-sgl-black" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+      </button>
+      <span className="font-sans text-sm text-sgl-gray-mid leading-relaxed select-none">
+        {children}
+      </span>
+    </label>
+  );
+}
+
 function validate(nombre: string, email: string, telefono: string): Errores {
   return {
     nombre:   VALIDATORS.nombre(nombre),
@@ -120,6 +157,9 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
 
   const [errors,  setErrors]  = useState<Errores>({ nombre: "", email: "", telefono: "" });
   const [touched, setTouched] = useState<Touched>({ nombre: false, email: false, telefono: false });
+
+  const [aceptaTC,   setAceptaTC]   = useState(false);
+  const [aceptaPriv, setAceptaPriv] = useState(false);
 
   const allValues = { nombre, email, telefono };
 
@@ -139,7 +179,7 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
 
   // Verificar si todos los campos son válidos (sin necesidad de haber sido tocados)
   const currentErrors = validate(nombre, email, telefono);
-  const isValid = Object.values(currentErrors).every(e => e === "");
+  const isValid = Object.values(currentErrors).every(e => e === "") && aceptaTC && aceptaPriv;
 
   function handleContinuar() {
     // Mostrar todos los errores aunque el usuario no haya tocado los campos
@@ -208,6 +248,31 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
           error={errors.telefono}
           touched={touched.telefono}
         />
+      </div>
+
+      {/* SGL-100 — Consentimientos */}
+      <div className="flex flex-col gap-4 border-t border-sgl-gold/10 pt-6">
+        <CheckboxField id="acepta-tc" checked={aceptaTC} onChange={setAceptaTC}>
+          Acepto los{" "}
+          <a href="/terminos" target="_blank" rel="noopener noreferrer"
+            className="text-sgl-gold hover:text-sgl-gold-light underline underline-offset-2 transition-colors duration-150">
+            Términos y Condiciones
+          </a>
+        </CheckboxField>
+
+        <CheckboxField id="acepta-priv" checked={aceptaPriv} onChange={setAceptaPriv}>
+          Acepto la{" "}
+          <a href="/privacidad" target="_blank" rel="noopener noreferrer"
+            className="text-sgl-gold hover:text-sgl-gold-light underline underline-offset-2 transition-colors duration-150">
+            Política de Privacidad
+          </a>
+        </CheckboxField>
+
+        {(!aceptaTC || !aceptaPriv) && (
+          <p className="font-sans text-xs text-sgl-gray-mid">
+            Debes aceptar ambos para continuar.
+          </p>
+        )}
       </div>
 
       {/* Botones */}
