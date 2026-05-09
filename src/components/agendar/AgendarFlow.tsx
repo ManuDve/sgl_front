@@ -19,6 +19,8 @@ export default function AgendarFlow() {
   const [servicio,  setServicio]  = useState<Servicio | null>(null);
   const [datos,     setDatos]     = useState<DatosCliente | null>(null);
   const [fechaHora, setFechaHora] = useState<FechaHoraSeleccion | null>(null);
+  const [enviando,  setEnviando]  = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState("");
 
   function handleServicioContinuar(s: Servicio) {
     setServicio(s);
@@ -35,8 +37,38 @@ export default function AgendarFlow() {
     setPaso(4);
   }
 
-  function handleConfirmar() {
-    // SGL-024 AG-IDEXTERNO: aquí irá el POST /api/appointments
+  async function handleConfirmar() {
+    if (!servicio || !datos || !fechaHora) return;
+    setEnviando(true);
+    setErrorEnvio("");
+
+    try {
+      const res = await fetch("http://localhost:8080/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombreCliente: datos.nombre,
+          email:         datos.email,
+          telefono:      datos.telefono,
+          serviceId:     servicio.id,
+          fecha:         fechaHora.fecha,
+          hora:          fechaHora.hora + ":00",
+          aceptaTerminos: true,
+        }),
+      });
+
+      const body = await res.json();
+
+      if (res.status === 201) {
+        window.location.href = `/confirmacion?id=${body.data.idExterno}`;
+      } else {
+        setErrorEnvio(body.message ?? "Error al crear el agendamiento. Intenta nuevamente.");
+      }
+    } catch {
+      setErrorEnvio("No se pudo conectar con el servidor. Intenta nuevamente.");
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -72,6 +104,8 @@ export default function AgendarFlow() {
           fechaHora={fechaHora}
           onConfirmar={handleConfirmar}
           onAtras={() => setPaso(3)}
+          enviando={enviando}
+          error={errorEnvio}
         />
       )}
     </div>

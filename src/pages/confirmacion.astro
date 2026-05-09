@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ConfirmacionView from "../components/ConfirmacionView";
+---
+
+<BaseLayout title="Agendamiento confirmado — SGL">
+  <main class="min-h-screen py-16 md:py-24">
+    <div class="max-w-2xl mx-auto px-4 md:px-8">
+      <ConfirmacionView client:load />
+    </div>
+  </main>
+</BaseLayout>

@@ -16,6 +16,8 @@ interface Props {
   fechaHora: FechaHoraSeleccion;
   onConfirmar: () => void;
   onAtras: () => void;
+  enviando?: boolean;
+  error?: string;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -64,7 +66,7 @@ function Fila({ label, value }: { label: string; value: string }) {
 
 // ─── Componente principal ─────────────────────────────────────
 
-export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, onAtras }: Props) {
+export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, onAtras, enviando = false, error = "" }: Props) {
   return (
     <div className="flex flex-col gap-10">
 
@@ -125,12 +127,19 @@ export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, o
         </div>
       </div>
 
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-4 text-red-400 font-sans text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Botones */}
       <div className="flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={onAtras}
-          style={{ padding: "12px 32px" }}
+          disabled={enviando}
+          style={{ padding: "12px 32px", opacity: enviando ? 0.4 : 1 }}
           className="border border-sgl-gold/40 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold rounded transition-colors duration-200"
         >
           Atrás
@@ -138,10 +147,14 @@ export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, o
         <button
           type="button"
           onClick={onConfirmar}
-          style={{ padding: "12px 40px" }}
-          className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold rounded transition-colors duration-200"
+          disabled={enviando}
+          style={{ padding: "12px 40px", opacity: enviando ? 0.7 : 1, cursor: enviando ? "not-allowed" : "pointer" }}
+          className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold rounded transition-colors duration-200 inline-flex items-center gap-2"
         >
-          Confirmar agendamiento
+          {enviando && (
+            <span className="w-4 h-4 border-2 border-sgl-black/30 border-t-sgl-black rounded-full animate-spin" />
+          )}
+          {enviando ? "Enviando…" : "Confirmar agendamiento"}
         </button>
       </div>
 
