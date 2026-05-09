@@ -3,218 +3,292 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="SGL | Asesoría legal a tu alcance">
-  <header class="bg-sgl-black/95 backdrop-blur border-b border-sgl-gold/20">
-    <div
-      class="max-w-6xl mx-auto px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4"
-    >
-      <a href="#inicio" class="font-serif text-xl text-sgl-white">
+
+  <!-- ─── NAVBAR ──────────────────────────────────────────────── -->
+  <header class="sticky top-0 z-50 bg-sgl-black/90 backdrop-blur border-b border-sgl-gold/15">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-6">
+      <a href="/" class="font-serif text-xl text-sgl-white shrink-0">
         S<span class="text-sgl-gold">G</span>L
       </a>
-      <nav class="flex items-center gap-4 md:gap-6 text-sm md:text-base">
-        <a
-          href="#inicio"
-          class="text-sgl-gray-mid hover:text-sgl-gold transition-colors"
-          >Inicio</a
-        >
-        <a
-          href="#servicios"
-          class="text-sgl-gray-mid hover:text-sgl-gold transition-colors"
-          >Servicios</a
-        >
-        <a
-          href="#agendar"
-          class="text-sgl-gray-mid hover:text-sgl-gold transition-colors"
-          >Agendar</a
-        >
+
+      <nav class="hidden md:flex items-center gap-7 text-sm">
+        <a href="#servicios" class="text-sgl-gray-mid hover:text-sgl-white transition-colors duration-200">Servicios</a>
+        <a href="#valores"   class="text-sgl-gray-mid hover:text-sgl-white transition-colors duration-200">Nosotros</a>
+        <a href="#contacto"  class="text-sgl-gray-mid hover:text-sgl-white transition-colors duration-200">Contacto</a>
       </nav>
+
       <a
-        href="#agendar"
-        class="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-4 py-2 rounded transition-colors duration-200"
+        href="/agendar"
+        class="shrink-0 bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
       >
-        Agendar
+        Agendar consulta
       </a>
     </div>
   </header>
 
-  <main id="inicio">
-    <section class="py-16 md:py-24">
-      <div
-        class="max-w-6xl mx-auto px-4 md:px-8 grid gap-10 lg:grid-cols-2 items-center"
-      >
-        <div>
-          <p
-            class="font-sans text-sm text-sgl-gray-mid tracking-wide uppercase"
-          >
-            Estudio jurídico
-          </p>
-          <h1
-            class="font-serif text-4xl md:text-6xl font-bold text-sgl-white mt-3"
-          >
-            Asesoría legal clara, rápida y humana
-          </h1>
-          <p class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-4">
-            Te ayudamos a tomar decisiones informadas con acompañamiento
-            profesional en cada etapa.
-          </p>
-          <div class="mt-6 flex flex-col sm:flex-row gap-3">
-            <a
-              href="#agendar"
-              class="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
-            >
-              Agendar consulta
-            </a>
-            <a
-              href="#servicios"
-              class="border border-sgl-gold text-sgl-gold hover:bg-sgl-gold hover:text-sgl-black font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
-            >
-              Ver servicios
-            </a>
-          </div>
-        </div>
-        <div
-          class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6 md:p-8"
-        >
-          <div class="border-t border-sgl-gold/30 pt-6">
-            <p class="font-serif text-xl font-semibold text-sgl-white">
-              Tu caso, en buenas manos
-            </p>
-            <p
-              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-3"
-            >
-              Analizamos tu situación y proponemos acciones concretas para
-              avanzar con seguridad.
-            </p>
-            <div class="mt-5 flex items-center gap-3 text-sgl-gray-mid">
-              <span class="text-sgl-gold font-semibold">+10 años</span>
-              <span>de experiencia combinada</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="servicios" class="py-16 md:py-24 border-t border-sgl-gold/30">
-      <div class="max-w-6xl mx-auto px-4 md:px-8">
-        <h2
-          class="font-serif text-3xl md:text-4xl font-semibold text-sgl-white"
-        >
-          Propuesta de valor
-        </h2>
-        <p class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-3">
-          Compromiso real con tus objetivos, con un servicio cercano y
-          transparente.
+  <!-- ─── HERO ────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden py-20 md:py-32">
+
+    <!-- Glow decorativo de fondo -->
+    <div class="pointer-events-none absolute inset-0 flex items-start justify-center overflow-hidden" aria-hidden="true">
+      <div class="w-[800px] h-[500px] rounded-full opacity-10"
+        style="background: radial-gradient(ellipse, var(--color-sgl-gold) 0%, transparent 70%); filter: blur(80px); transform: translateY(-30%);">
+      </div>
+    </div>
+
+    <div class="relative max-w-6xl mx-auto px-4 md:px-8 grid lg:grid-cols-2 gap-12 items-center">
+
+      <!-- Texto -->
+      <div>
+        <p class="hero-label font-sans text-xs text-sgl-gold uppercase tracking-[0.2em]"
+          style="animation: fade-up 0.5s ease both; animation-delay: 0ms;">
+          Estudio jurídico · Santiago, Chile
         </p>
-        <div class="mt-10 grid gap-6 md:gap-8 md:grid-cols-3">
-          <div
-            class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6"
-          >
-            <div
-              class="h-10 w-10 rounded-full bg-sgl-gold flex items-center justify-center"
-            >
-              <svg
-                class="h-5 w-5 text-sgl-black"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 3l4 7-4 2-4-2 4-7z"></path>
-                <path d="M8 12l-3 9h14l-3-9"></path>
-              </svg>
-            </div>
-            <h3 class="font-serif text-xl font-semibold text-sgl-white mt-4">
-              Experiencia
-            </h3>
-            <p
-              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-2"
-            >
-              Casos reales en civil, laboral y familia, con mirada estratégica.
-            </p>
-          </div>
-          <div
-            class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6"
-          >
-            <div
-              class="h-10 w-10 rounded-full bg-sgl-gold flex items-center justify-center"
-            >
-              <svg
-                class="h-5 w-5 text-sgl-black"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z"></path>
-              </svg>
-            </div>
-            <h3 class="font-serif text-xl font-semibold text-sgl-white mt-4">
-              Confianza
-            </h3>
-            <p
-              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-2"
-            >
-              Información clara, pasos definidos y acompañamiento constante.
-            </p>
-          </div>
-          <div
-            class="bg-sgl-gray border border-sgl-gray-light/10 rounded-lg p-6"
-          >
-            <div
-              class="h-10 w-10 rounded-full bg-sgl-gold flex items-center justify-center"
-            >
-              <svg
-                class="h-5 w-5 text-sgl-black"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 12l5 5L20 6"></path>
-              </svg>
-            </div>
-            <h3 class="font-serif text-xl font-semibold text-sgl-white mt-4">
-              Resultados
-            </h3>
-            <p
-              class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-2"
-            >
-              Acciones eficientes para proteger tus derechos y tu tiempo.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="agendar" class="py-16 md:py-24">
-      <div class="max-w-6xl mx-auto px-4 md:px-8">
-        <div
-          class="bg-sgl-gold text-sgl-black rounded-lg p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
-        >
-          <div>
-            <p class="font-serif text-2xl md:text-3xl font-semibold">
-              Agenda tu consulta hoy
-            </p>
-            <p class="font-sans text-base text-sgl-black leading-relaxed mt-2">
-              Recibe orientación legal con un equipo cercano y comprometido.
-            </p>
-          </div>
+        <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-sgl-white leading-tight mt-4"
+          style="animation: fade-up 0.6s ease both; animation-delay: 100ms;">
+          Asesoría legal
+          <span class="block" style="background: linear-gradient(90deg, var(--color-sgl-white), var(--color-sgl-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            clara y humana
+          </span>
+        </h1>
+
+        <p class="font-sans text-base md:text-lg text-sgl-gray-mid leading-relaxed mt-5 max-w-md"
+          style="animation: fade-up 0.6s ease both; animation-delay: 200ms;">
+          Te acompañamos en cada paso con orientación profesional, transparente
+          y enfocada en resultados concretos.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3"
+          style="animation: fade-up 0.6s ease both; animation-delay: 300ms;">
           <a
             href="/agendar"
-            class="bg-sgl-black hover:bg-sgl-gray text-sgl-white font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
+            class="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-7 py-3.5 rounded transition-colors duration-200 text-center"
           >
             Agendar consulta
           </a>
+          <a
+            href="#servicios"
+            class="border border-sgl-gold/50 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-7 py-3.5 rounded transition-colors duration-200 text-center"
+          >
+            Ver servicios
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-10 flex gap-8"
+          style="animation: fade-up 0.6s ease both; animation-delay: 400ms;">
+          {[
+            { valor: "+10", label: "años de experiencia" },
+            { valor: "+200", label: "casos resueltos" },
+            { valor: "100%", label: "compromiso" },
+          ].map(({ valor, label }) => (
+            <div class="flex flex-col gap-0.5">
+              <span class="font-serif text-2xl font-bold text-sgl-gold">{valor}</span>
+              <span class="font-sans text-xs text-sgl-gray-mid">{label}</span>
+            </div>
+          ))}
         </div>
       </div>
-    </section>
-  </main>
+
+      <!-- Card derecha -->
+      <div class="hidden lg:block"
+        style="animation: fade-right 0.7s ease both; animation-delay: 250ms;">
+        <div class="relative rounded-2xl border border-sgl-gold/20 bg-sgl-gray overflow-hidden p-8"
+          style="box-shadow: 0 0 80px rgba(201,168,76,0.08);">
+          <!-- Línea accent superior -->
+          <div class="absolute top-0 left-0 right-0 h-px"
+            style="background: linear-gradient(90deg, transparent, var(--color-sgl-gold), transparent);">
+          </div>
+
+          <p class="font-sans text-xs text-sgl-gold uppercase tracking-widest">Por qué elegirnos</p>
+          <p class="font-serif text-2xl font-semibold text-sgl-white mt-3 leading-snug">
+            Tu caso en manos de profesionales comprometidos
+          </p>
+          <p class="font-sans text-sm text-sgl-gray-mid leading-relaxed mt-3">
+            Analizamos tu situación y proponemos acciones concretas para avanzar con seguridad y claridad.
+          </p>
+
+          <ul class="mt-6 flex flex-col gap-3">
+            {[
+              "Consulta inicial sin compromiso",
+              "Comunicación directa con tu abogado",
+              "Plazos claros y tarifas transparentes",
+              "Seguimiento continuo de tu caso",
+            ].map((item) => (
+              <li class="flex items-center gap-3 font-sans text-sm text-sgl-white">
+                <span class="shrink-0 w-5 h-5 rounded-full bg-sgl-gold/15 flex items-center justify-center">
+                  <svg class="w-3 h-3 text-sgl-gold" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── SERVICIOS ────────────────────────────────────────────── -->
+  <section id="servicios" class="py-20 md:py-28 border-t border-sgl-gold/10">
+    <div class="max-w-6xl mx-auto px-4 md:px-8">
+
+      <div class="max-w-xl" data-animate>
+        <p class="font-sans text-xs text-sgl-gold uppercase tracking-widest">Áreas de práctica</p>
+        <h2 class="font-serif text-3xl md:text-4xl font-semibold text-sgl-white mt-3">
+          Servicios legales especializados
+        </h2>
+        <p class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-3">
+          Cobertura integral en las materias legales más demandadas, con enfoque en soluciones prácticas.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {[
+          { icon: "⚖️",  titulo: "Derecho Civil",    desc: "Contratos, obligaciones, responsabilidad civil y gestión patrimonial." },
+          { icon: "👔",  titulo: "Derecho Laboral",  desc: "Despidos, negociaciones colectivas, tutela y conciliación laboral." },
+          { icon: "👨‍👩‍👧", titulo: "Derecho de Familia", desc: "Divorcios, pensiones alimenticias, tuición y régimen de visitas." },
+          { icon: "📊",  titulo: "Derecho Tributario", desc: "Planificación fiscal, renta, IVA y representación ante el SII." },
+        ].map(({ icon, titulo, desc }, i) => (
+          <div
+            class="group bg-sgl-gray rounded-xl border border-sgl-gray-light/10 p-6 flex flex-col gap-4
+              hover:border-sgl-gold/40 hover:-translate-y-1 transition-all duration-200"
+            data-animate
+            style={`transition-delay: ${i * 80}ms`}
+          >
+            <span class="text-3xl">{icon}</span>
+            <div>
+              <h3 class="font-serif text-lg font-semibold text-sgl-white">{titulo}</h3>
+              <p class="font-sans text-sm text-sgl-gray-mid leading-relaxed mt-2">{desc}</p>
+            </div>
+            <a href="/agendar"
+              class="mt-auto font-sans text-xs text-sgl-gold hover:text-sgl-gold-light transition-colors duration-200 inline-flex items-center gap-1">
+              Agendar
+              <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none">
+                <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── VALORES ──────────────────────────────────────────────── -->
+  <section id="valores" class="py-20 md:py-28 border-t border-sgl-gold/10">
+    <div class="max-w-6xl mx-auto px-4 md:px-8">
+
+      <div class="text-center max-w-2xl mx-auto" data-animate>
+        <p class="font-sans text-xs text-sgl-gold uppercase tracking-widest">Nuestro compromiso</p>
+        <h2 class="font-serif text-3xl md:text-4xl font-semibold text-sgl-white mt-3">
+          Por qué confiar en nosotros
+        </h2>
+      </div>
+
+      <div class="mt-14 grid gap-6 md:grid-cols-3">
+        {[
+          {
+            num: "01",
+            titulo: "Experiencia probada",
+            desc: "Más de una década resolviendo casos en civil, laboral y familia con enfoque estratégico.",
+          },
+          {
+            num: "02",
+            titulo: "Comunicación transparente",
+            desc: "Información clara, pasos definidos y acceso directo a tu abogado en todo momento.",
+          },
+          {
+            num: "03",
+            titulo: "Resultados concretos",
+            desc: "Acciones eficientes y orientadas a proteger tus derechos y optimizar tu tiempo.",
+          },
+        ].map(({ num, titulo, desc }, i) => (
+          <div
+            class="relative border border-sgl-gray-light/10 rounded-xl p-7 bg-sgl-gray
+              hover:border-sgl-gold/30 transition-colors duration-300"
+            data-animate
+            style={`transition-delay: ${i * 100}ms`}
+          >
+            <span class="font-serif text-5xl font-bold text-sgl-gold/10 absolute top-5 right-6 select-none">{num}</span>
+            <h3 class="font-serif text-xl font-semibold text-sgl-white relative">{titulo}</h3>
+            <p class="font-sans text-sm text-sgl-gray-mid leading-relaxed mt-3 relative">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── CTA FINAL ────────────────────────────────────────────── -->
+  <section id="contacto" class="py-20 md:py-28 border-t border-sgl-gold/10">
+    <div class="max-w-6xl mx-auto px-4 md:px-8">
+      <div
+        class="relative rounded-2xl overflow-hidden p-10 md:p-16 flex flex-col md:flex-row md:items-center md:justify-between gap-8"
+        data-animate
+        style="background: linear-gradient(135deg, #1A1A1A 0%, #0f0f0f 100%); box-shadow: 0 0 0 1px rgba(201,168,76,0.25), 0 0 60px rgba(201,168,76,0.05);"
+      >
+        <!-- Glow interior -->
+        <div class="pointer-events-none absolute bottom-0 right-0 w-96 h-64 rounded-full opacity-20"
+          style="background: radial-gradient(ellipse, var(--color-sgl-gold) 0%, transparent 70%); filter: blur(60px);" aria-hidden="true">
+        </div>
+
+        <div class="relative max-w-lg">
+          <p class="font-sans text-xs text-sgl-gold uppercase tracking-widest">Da el primer paso</p>
+          <p class="font-serif text-3xl md:text-4xl font-semibold text-sgl-white mt-3 leading-snug">
+            Agenda tu consulta hoy
+          </p>
+          <p class="font-sans text-base text-sgl-gray-mid leading-relaxed mt-3">
+            Cuéntanos tu caso y recibe orientación profesional de un equipo cercano y comprometido.
+          </p>
+        </div>
+
+        <a
+          href="/agendar"
+          class="relative shrink-0 bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-8 py-4 rounded-lg transition-colors duration-200 text-center text-base"
+        >
+          Comenzar ahora
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── FOOTER ───────────────────────────────────────────────── -->
+  <footer class="bg-sgl-gray border-t border-sgl-gold/20 py-8">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span class="font-serif text-lg text-sgl-white">
+        S<span class="text-sgl-gold">G</span>L
+      </span>
+      <p class="font-sans text-xs text-sgl-gray-mid">
+        © {new Date().getFullYear()} SGL Estudio Jurídico · Santiago, Chile
+      </p>
+      <div class="flex gap-5 font-sans text-xs text-sgl-gray-mid">
+        <a href="#" class="hover:text-sgl-gold transition-colors">Términos y condiciones</a>
+        <a href="#" class="hover:text-sgl-gold transition-colors">Privacidad</a>
+      </div>
+    </div>
+  </footer>
+
 </BaseLayout>
+
+<script>
+  // Scroll-reveal con IntersectionObserver
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  document.querySelectorAll("[data-animate]").forEach((el) => observer.observe(el));
+</script>
