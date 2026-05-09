@@ -65,17 +65,17 @@ export default function LoginForm() {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="bg-sgl-gray rounded-lg p-8 w-full max-w-sm flex flex-col gap-6"
+      className="bg-sgl-gray rounded-lg p-10 w-full max-w-md flex flex-col gap-8"
     >
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex flex-col items-center gap-2">
         <h1 className="font-serif text-2xl font-bold text-sgl-white">
           SGL<span className="text-sgl-gold">.</span>
         </h1>
         <p className="font-sans text-sm text-sgl-gray-mid">Panel administrativo</p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
           <label htmlFor="email" className="font-sans text-sm text-sgl-gray-mid">
             Email
           </label>
@@ -97,7 +97,7 @@ export default function LoginForm() {
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <label htmlFor="password" className="font-sans text-sm text-sgl-gray-mid">
             Contraseña
           </label>

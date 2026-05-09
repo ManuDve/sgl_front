@@ -1,0 +1,24 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import LogoutButton from "../components/admin/LogoutButton";
+
+const { title = "Admin — SGL" } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <div class="min-h-screen flex flex-col">
+    <header class="bg-sgl-black/95 backdrop-blur border-b border-sgl-gold/20 sticky top-0 z-10">
+      <nav class="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+        <span class="font-serif text-xl text-sgl-white">
+          SGL<span class="text-sgl-gold">.</span>
+          <span class="font-sans text-sm text-sgl-gray-mid ml-2">Admin</span>
+        </span>
+        <LogoutButton client:load />
+      </nav>
+    </header>
+
+    <main class="flex-1 max-w-6xl mx-auto w-full px-4 md:px-8 py-10 md:py-12">
+      <slot />
+    </main>
+  </div>
+</BaseLayout>
