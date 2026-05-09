@@ -91,7 +91,7 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
       </div>
 
       {/* Campos */}
-      <div className="flex flex-col gap-5 max-w-lg">
+      <div className="flex flex-col gap-5">
         <Field
           id="nombre"
           label="Nombre completo"
@@ -121,7 +121,7 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
       </div>
 
       {/* Botones */}
-      <div className="flex items-center justify-between gap-4 max-w-lg">
+      <div className="flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={onAtras}
