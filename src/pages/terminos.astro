@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Términos y Condiciones — SGL">
+  <main class="min-h-screen pt-12 pb-24">
+    <div class="max-w-2xl mx-auto px-4 md:px-8">
+
+      <!-- Volver -->
+      <a href="/"
+        class="inline-flex items-center gap-1.5 font-sans text-sm text-sgl-gray-mid hover:text-sgl-gold transition-colors duration-200 mb-8">
+        <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver al inicio
+      </a>
+
+      <!-- Aviso -->
+      <div class="flex items-start gap-3 bg-sgl-gold/10 border border-sgl-gold/30 rounded-xl px-5 py-4 mb-10">
+        <svg class="w-4 h-4 text-sgl-gold shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+        </svg>
+        <p class="font-sans text-sm text-sgl-gold">
+          <strong>Documento en revisión legal</strong> — sujeto a cambios. La versión vigente será publicada con fecha de entrada en vigor.
+        </p>
+      </div>
+
+      <!-- Encabezado -->
+      <div class="mb-10">
+        <p class="font-sans text-xs text-sgl-gold uppercase tracking-widest mb-2">Legal</p>
+        <h1 class="font-serif text-4xl font-bold text-sgl-white">Términos y Condiciones</h1>
+        <p class="font-sans text-sm text-sgl-gray-mid mt-3">
+          Estudio Jurídico SGL · Santiago, Chile · Última actualización: Mayo 2026
+        </p>
+      </div>
+
+      <!-- Contenido -->
+      <div class="flex flex-col gap-10 font-sans text-base text-sgl-gray-mid leading-relaxed">
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">1. Objeto y alcance</h2>
+          <p>
+            Los presentes Términos y Condiciones regulan el acceso y uso del sistema de agendamiento en línea
+            del Estudio Jurídico SGL (en adelante "el Estudio"), disponible en este sitio web.
+            Al utilizar el sistema de agendamiento, el usuario declara haber leído, comprendido y aceptado
+            íntegramente las condiciones aquí establecidas.
+          </p>
+          <p>
+            El Estudio se reserva el derecho de modificar estos términos en cualquier momento, notificando
+            los cambios mediante publicación en este mismo sitio con, al menos, cinco (5) días de anticipación.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">2. Naturaleza del servicio</h2>
+          <p>
+            El sistema permite a los usuarios agendar consultas legales con los profesionales del Estudio.
+            El agendamiento en línea no constituye ni reemplaza una relación abogado-cliente formal.
+            El inicio de dicha relación quedará sujeto a la celebración del respectivo contrato de prestación
+            de servicios profesionales.
+          </p>
+          <p>
+            El Estudio no garantiza disponibilidad horaria en todo momento y se reserva el derecho de
+            cancelar o reagendar citas por causas justificadas, informando al cliente con la mayor
+            anticipación posible.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">3. Responsabilidades del usuario</h2>
+          <p>Al utilizar este sistema el usuario se compromete a:</p>
+          <ul class="list-none flex flex-col gap-2 pl-2">
+            {[
+              "Proporcionar información veraz, completa y actualizada en el formulario de agendamiento.",
+              "Presentarse puntualmente a la consulta agendada o notificar su cancelación con al menos 24 horas de anticipación.",
+              "No utilizar el sistema con fines ilícitos o contrarios a las leyes chilenas vigentes.",
+              "Mantener la confidencialidad de los datos de su cita y no compartir el ID de agendamiento con terceros no autorizados.",
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-sgl-gold mt-1 shrink-0">·</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">4. Política de cancelación y reagendamiento</h2>
+          <p>
+            Las cancelaciones realizadas con <strong class="text-sgl-white">más de 24 horas hábiles de anticipación</strong> no
+            generan cargo alguno. Las cancelaciones tardías o inasistencias sin aviso previo podrán ser consideradas
+            en futuros agendamientos.
+          </p>
+          <p>
+            Los reagendamientos están sujetos a disponibilidad horaria y deben solicitarse directamente al Estudio
+            a través de los canales de contacto habilitados.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">5. Pago de honorarios</h2>
+          <p>
+            El monto indicado al momento del agendamiento corresponde a una tarifa referencial. Los honorarios
+            definitivos serán acordados entre el cliente y el profesional asignado al inicio de la consulta.
+          </p>
+          <p>
+            El pago debe realizarse mediante transferencia bancaria dentro de las 24 horas hábiles siguientes
+            al agendamiento, utilizando el ID de la cita como referencia. El no pago dentro de dicho plazo
+            podrá implicar la cancelación automática de la consulta.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">6. Limitación de responsabilidad</h2>
+          <p>
+            El Estudio no será responsable por interrupciones del servicio derivadas de causas ajenas a su control,
+            incluyendo fallas en la conectividad a internet, mantenimiento de plataformas o eventos de fuerza mayor.
+          </p>
+          <p>
+            La información publicada en este sitio tiene carácter meramente informativo y no constituye asesoría
+            legal. Para obtener orientación aplicable a su caso específico, debe agendar una consulta con un
+            profesional del Estudio.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">7. Propiedad intelectual</h2>
+          <p>
+            Todo el contenido de este sitio web —incluyendo textos, diseños, logotipos e imágenes— es propiedad
+            del Estudio Jurídico SGL o de sus licenciantes. Queda prohibida su reproducción total o parcial sin
+            autorización escrita previa.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">8. Ley aplicable y jurisdicción</h2>
+          <p>
+            Estos términos se rigen por las leyes de la República de Chile. Cualquier controversia derivada
+            de su interpretación o aplicación será sometida a los tribunales ordinarios de justicia de la
+            ciudad de Santiago, renunciando las partes a cualquier otro fuero que pudiera corresponderles.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">9. Contacto</h2>
+          <p>
+            Para consultas relacionadas con estos términos, puede contactarnos a través de los canales
+            habilitados en la sección de contacto de este sitio web o directamente en nuestras oficinas
+            en Santiago, Chile.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>

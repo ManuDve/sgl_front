@@ -1,0 +1,212 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Política de Privacidad — SGL">
+  <main class="min-h-screen pt-12 pb-24">
+    <div class="max-w-2xl mx-auto px-4 md:px-8">
+
+      <!-- Volver -->
+      <a href="/"
+        class="inline-flex items-center gap-1.5 font-sans text-sm text-sgl-gray-mid hover:text-sgl-gold transition-colors duration-200 mb-8">
+        <svg class="w-4 h-4" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Volver al inicio
+      </a>
+
+      <!-- Aviso -->
+      <div class="flex items-start gap-3 bg-sgl-gold/10 border border-sgl-gold/30 rounded-xl px-5 py-4 mb-10">
+        <svg class="w-4 h-4 text-sgl-gold shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+        </svg>
+        <p class="font-sans text-sm text-sgl-gold">
+          <strong>Documento en revisión legal</strong> — sujeto a cambios. La versión vigente será publicada con fecha de entrada en vigor.
+        </p>
+      </div>
+
+      <!-- Encabezado -->
+      <div class="mb-10">
+        <p class="font-sans text-xs text-sgl-gold uppercase tracking-widest mb-2">Legal</p>
+        <h1 class="font-serif text-4xl font-bold text-sgl-white">Política de Privacidad</h1>
+        <p class="font-sans text-sm text-sgl-gray-mid mt-3">
+          Estudio Jurídico SGL · Santiago, Chile · Última actualización: Mayo 2026
+        </p>
+      </div>
+
+      <!-- Contenido -->
+      <div class="flex flex-col gap-10 font-sans text-base text-sgl-gray-mid leading-relaxed">
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">1. Responsable del tratamiento</h2>
+          <p>
+            El responsable del tratamiento de los datos personales recopilados a través de este sitio web es
+            el <strong class="text-sgl-white">Estudio Jurídico SGL</strong>, con domicilio en la ciudad de
+            Santiago, Chile. Para consultas relacionadas con sus datos personales puede contactarnos a través
+            de los canales indicados al final de este documento.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">2. Datos personales que recopilamos</h2>
+          <p>Al utilizar nuestro sistema de agendamiento, recopilamos los siguientes datos:</p>
+          <ul class="list-none flex flex-col gap-2 pl-2">
+            {[
+              "Nombre completo.",
+              "Dirección de correo electrónico.",
+              "Número de teléfono.",
+              "Materia legal de interés (tipo de consulta).",
+              "Fecha y hora seleccionadas para la consulta.",
+              "Datos de navegación generados al usar este sitio (dirección IP, tipo de navegador, páginas visitadas).",
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-sgl-gold mt-1 shrink-0">·</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p>
+            No recopilamos datos sensibles como número de RUT, datos bancarios completos ni información de
+            salud en el proceso de agendamiento.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">3. Finalidad del tratamiento</h2>
+          <p>Sus datos personales son utilizados exclusivamente para:</p>
+          <ul class="list-none flex flex-col gap-2 pl-2">
+            {[
+              "Gestionar y confirmar su agendamiento de consulta legal.",
+              "Enviar comunicaciones relacionadas con su cita (recordatorios, confirmaciones, cambios de estado).",
+              "Mejorar la calidad y funcionamiento de nuestros servicios.",
+              "Dar cumplimiento a obligaciones legales y regulatorias aplicables en Chile.",
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-sgl-gold mt-1 shrink-0">·</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p>
+            No utilizamos sus datos para fines publicitarios de terceros ni los cedemos a empresas de
+            marketing sin su consentimiento expreso.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">4. Base legal del tratamiento</h2>
+          <p>
+            El tratamiento de sus datos personales se fundamenta en:
+          </p>
+          <ul class="list-none flex flex-col gap-2 pl-2">
+            {[
+              "El consentimiento expreso otorgado al aceptar esta política durante el proceso de agendamiento.",
+              "La ejecución de la prestación de servicios solicitada.",
+              "El cumplimiento de obligaciones legales, en especial las establecidas en la Ley N° 19.628 sobre Protección de la Vida Privada y normativa complementaria vigente en Chile.",
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-sgl-gold mt-1 shrink-0">·</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">5. Conservación de los datos</h2>
+          <p>
+            Los datos personales se conservarán durante el tiempo necesario para cumplir con la finalidad
+            para la que fueron recopilados, y en ningún caso por un período superior al exigido por la
+            normativa legal aplicable. Una vez cumplida dicha finalidad, los datos serán eliminados o
+            anonimizados de forma segura.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">6. Derechos del titular</h2>
+          <p>
+            De conformidad con la Ley N° 19.628 y las disposiciones complementarias vigentes, usted tiene
+            derecho a:
+          </p>
+          <ul class="list-none flex flex-col gap-2 pl-2">
+            {[
+              "Acceder a sus datos personales en nuestro poder.",
+              "Rectificar datos inexactos o incompletos.",
+              "Cancelar o eliminar sus datos cuando no sean necesarios para la finalidad original.",
+              "Oponerse al tratamiento de sus datos en los casos previstos por la ley.",
+            ].map(item => (
+              <li class="flex items-start gap-2">
+                <span class="text-sgl-gold mt-1 shrink-0">·</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p>
+            Para ejercer cualquiera de estos derechos, escríbanos a través de nuestros canales de contacto
+            indicando su nombre completo y la solicitud específica.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">7. Seguridad de los datos</h2>
+          <p>
+            Aplicamos medidas técnicas y organizativas adecuadas para proteger sus datos personales frente
+            a accesos no autorizados, pérdida, alteración o divulgación indebida. No obstante, ningún sistema
+            de transmisión por internet es completamente seguro, por lo que no podemos garantizar seguridad
+            absoluta.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">8. Transferencia de datos a terceros</h2>
+          <p>
+            No cedemos, vendemos ni transferimos sus datos personales a terceros, salvo cuando sea
+            estrictamente necesario para la prestación del servicio (por ejemplo, servicios de correo
+            electrónico transaccional) o cuando así lo exija la legislación chilena aplicable.
+          </p>
+          <p>
+            En caso de transferencia internacional de datos, adoptaremos las medidas de salvaguarda exigidas
+            por la normativa vigente.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">9. Modificaciones a esta política</h2>
+          <p>
+            Nos reservamos el derecho de actualizar esta Política de Privacidad para adaptarla a cambios
+            normativos o mejoras en nuestros procesos. Toda modificación relevante será comunicada en este
+            sitio con la correspondiente fecha de actualización.
+          </p>
+        </section>
+
+        <div class="border-t border-sgl-gold/10" />
+
+        <section class="flex flex-col gap-3">
+          <h2 class="font-serif text-xl font-semibold text-sgl-white">10. Contacto</h2>
+          <p>
+            Para cualquier consulta, solicitud o reclamación relacionada con el tratamiento de sus datos
+            personales, puede contactarnos a través de los canales de atención disponibles en la sección
+            de contacto de este sitio web o visitarnos en nuestras oficinas en Santiago, Chile.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
