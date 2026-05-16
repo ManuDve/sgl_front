@@ -3,7 +3,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ConfirmacionView from "../components/ConfirmacionView";
 ---
 
-<BaseLayout title="Agendamiento confirmado — SGL">
+<BaseLayout
+  title="Consulta agendada — SGL"
+  description="Tu consulta ha sido agendada exitosamente. Revisa los datos de tu cita."
+>
   <main class="min-h-screen pt-16 pb-24 md:pt-24 md:pb-32">
     <div class="max-w-2xl mx-auto px-4 md:px-8">
       <ConfirmacionView client:load />

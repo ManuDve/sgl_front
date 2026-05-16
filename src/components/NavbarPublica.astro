@@ -1,0 +1,123 @@
+---
+const { pathname = "/" } = Astro.props;
+
+function linkClass(href: string) {
+  const active =
+    href === "/"
+      ? pathname === "/"
+      : pathname.startsWith(href);
+  return active
+    ? "font-sans text-sm text-sgl-gold"
+    : "font-sans text-sm text-sgl-gray-mid hover:text-sgl-white transition-colors duration-200";
+}
+---
+
+<header class="sticky top-0 z-50 bg-sgl-black/90 backdrop-blur border-b border-sgl-gold/15">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-6">
+
+    <!-- Logo -->
+    <a href="/" class="font-serif text-xl text-sgl-white shrink-0">
+      SGL<span class="text-sgl-gold">.</span>
+    </a>
+
+    <!-- Nav desktop -->
+    <nav class="hidden md:flex items-center gap-7">
+      <a href="/"          class={linkClass("/")}>Inicio</a>
+      <a href="/#servicios" class={linkClass("/#servicios")}>Servicios</a>
+      <a href="/#contacto"  class={linkClass("/#contacto")}>Contacto</a>
+    </nav>
+
+    <!-- CTA desktop + hamburguesa móvil -->
+    <div class="flex items-center gap-3">
+      <a
+        href="/agendar"
+        class="shrink-0 bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
+      >
+        Agendar
+      </a>
+
+      <!-- Hamburguesa (solo móvil) -->
+      <button
+        id="nav-hamburger"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 shrink-0"
+      >
+        <span class="block w-5 h-px bg-sgl-white transition-all duration-200"></span>
+        <span class="block w-5 h-px bg-sgl-white transition-all duration-200"></span>
+        <span class="block w-5 h-px bg-sgl-white transition-all duration-200"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Backdrop -->
+<div
+  id="nav-backdrop"
+  class="fixed inset-0 z-40 bg-sgl-black/60"
+  aria-hidden="true"
+></div>
+
+<!-- Drawer lateral -->
+<aside
+  id="nav-drawer"
+  class="fixed top-0 right-0 z-50 h-full w-72 bg-sgl-gray border-l border-sgl-gold/20 flex flex-col pt-6 px-6 pb-10"
+  aria-label="Menú de navegación"
+>
+  <!-- Cerrar -->
+  <div class="flex items-center justify-between mb-8">
+    <span class="font-serif text-lg text-sgl-white">SGL<span class="text-sgl-gold">.</span></span>
+    <button id="nav-close" aria-label="Cerrar menú" class="w-8 h-8 flex items-center justify-center text-sgl-gray-mid hover:text-sgl-white transition-colors duration-200">
+      <svg viewBox="0 0 16 16" fill="none" class="w-5 h-5">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Links -->
+  <nav class="flex flex-col gap-2">
+    <a href="/"           class="font-sans text-base py-3 border-b border-sgl-gold/10 text-sgl-white hover:text-sgl-gold transition-colors duration-200">Inicio</a>
+    <a href="/#servicios" class="font-sans text-base py-3 border-b border-sgl-gold/10 text-sgl-white hover:text-sgl-gold transition-colors duration-200">Servicios</a>
+    <a href="/#contacto"  class="font-sans text-base py-3 border-b border-sgl-gold/10 text-sgl-white hover:text-sgl-gold transition-colors duration-200">Contacto</a>
+  </nav>
+
+  <!-- CTA -->
+  <a
+    href="/agendar"
+    class="mt-8 bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-6 py-3 rounded transition-colors duration-200 text-center"
+  >
+    Agendar consulta
+  </a>
+</aside>
+
+<script>
+  const hamburger = document.getElementById("nav-hamburger");
+  const drawer    = document.getElementById("nav-drawer");
+  const backdrop  = document.getElementById("nav-backdrop");
+  const closeBtn  = document.getElementById("nav-close");
+
+  if (hamburger && drawer && backdrop && closeBtn) {
+    function openDrawer() {
+      drawer!.classList.add("open");
+      backdrop!.classList.add("open");
+      hamburger!.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeDrawer() {
+      drawer!.classList.remove("open");
+      backdrop!.classList.remove("open");
+      hamburger!.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
+
+    hamburger.addEventListener("click", openDrawer);
+    closeBtn.addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+
+    // Cerrar con Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeDrawer();
+    });
+  }
+</script>
