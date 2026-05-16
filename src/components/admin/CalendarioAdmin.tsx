@@ -73,12 +73,13 @@ function monthLabel(mes: string): string {
   });
 }
 
-function daysInRange(desde: string, hasta: string): string[] {
+function workdaysInRange(desde: string, hasta: string): string[] {
   const result: string[] = [];
   const cur = new Date(desde + "T12:00:00");
   const end = new Date(hasta + "T12:00:00");
   while (cur <= end) {
-    result.push(cur.toISOString().slice(0, 10));
+    const dow = cur.getDay(); // 0 = domingo, 6 = sábado
+    if (dow !== 0 && dow !== 6) result.push(cur.toISOString().slice(0, 10));
     cur.setDate(cur.getDate() + 1);
   }
   return result;
@@ -294,7 +295,7 @@ export default function CalendarioAdmin() {
     window.dispatchEvent(new CustomEvent("appointments:changed"));
   }
 
-  const days      = data ? daysInRange(data.desde, data.hasta) : [];
+  const days      = data ? workdaysInRange(data.desde, data.hasta) : [];
   const gridClass = GRID_COLS[days.length] ?? GRID_COLS[7];
 
   return (
@@ -382,8 +383,8 @@ export default function CalendarioAdmin() {
 
       {/* Grilla del calendario */}
       {loading ? (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
-          {[...Array(7)].map((_, i) => <SkeletonDayCard key={i} />)}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {[...Array(5)].map((_, i) => <SkeletonDayCard key={i} />)}
         </div>
       ) : error ? (
         <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-5 py-4 text-red-400 font-sans text-sm">
