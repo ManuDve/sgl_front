@@ -93,6 +93,7 @@ export default function AppointmentTable() {
   function handleStatusChanged() {
     setSelectedId(null);
     fetchAppointments(tab);
+    window.dispatchEvent(new CustomEvent("appointments:changed"));
   }
 
   const tabLabel = TABS.find(t => t.key === tab)?.label ?? "agendamientos";
