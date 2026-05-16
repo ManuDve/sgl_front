@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import ConfirmPaymentModal from "./ConfirmPaymentModal";
 
 interface AppointmentDetail {
   id: number;
@@ -70,6 +71,7 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
   const [updating,        setUpdating]        = useState(false);
   const [updateError,     setUpdateError]     = useState("");
   const [confirmCancel,   setConfirmCancel]   = useState(false);
+  const [paymentModal,    setPaymentModal]    = useState(false);
   const [mounted,         setMounted]         = useState(false);
 
   const handleClose = useCallback(() => {
@@ -77,6 +79,7 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
     setError("");
     setUpdateError("");
     setConfirmCancel(false);
+    setPaymentModal(false);
     onClose();
   }, [onClose]);
 
@@ -151,7 +154,21 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
 
   if (id === null) return null;
 
+  // Modal secundario de confirmación de pago
+  const paymentOverlay = paymentModal && detail ? (
+    <ConfirmPaymentModal
+      appointmentId={detail.id}
+      idExterno={detail.idExterno}
+      nombreCliente={detail.nombreCliente}
+      monto={detail.monto}
+      onClose={() => setPaymentModal(false)}
+      onSuccess={() => { onStatusChanged?.(); handleClose(); }}
+    />
+  ) : null;
+
   return (
+    <>
+    {paymentOverlay}
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
       onClick={handleClose}
@@ -273,12 +290,9 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
               <div className="flex items-center gap-2">
                 {detail.estado === "PENDING" && (
                   <button
-                    onClick={() => handleChangeStatus("CONFIRMADO")}
-                    disabled={updating}
-                    style={{ opacity: updating ? 0.6 : 1, cursor: updating ? "not-allowed" : "pointer" }}
-                    className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200 inline-flex items-center gap-2"
+                    onClick={() => setPaymentModal(true)}
+                    className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
                   >
-                    {updating && <span className="w-3.5 h-3.5 border-2 border-sgl-black/30 border-t-sgl-black rounded-full animate-spin" />}
                     Confirmar pago
                   </button>
                 )}
@@ -325,5 +339,6 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
         )}
       </div>
     </div>
+    </>
   );
 }

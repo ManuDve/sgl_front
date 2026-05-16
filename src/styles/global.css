@@ -61,6 +61,7 @@
 
 @theme {
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --z-index-60: 60; /* Modal secundario sobre modal principal (z-50) */
   --color-sgl-black: #0A0A0A;
   --color-sgl-white: #F5F5F5;
   --color-sgl-gold: #C9A84C;
