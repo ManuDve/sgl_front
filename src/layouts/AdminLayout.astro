@@ -18,19 +18,28 @@ function navClass(href: string) {
 <BaseLayout title={title} showNav={false}>
   <div class="min-h-screen flex flex-col">
     <header class="bg-sgl-black/95 backdrop-blur border-b border-sgl-gold/20 sticky top-0 z-10">
-      <nav class="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-6">
-        <span class="font-serif text-xl text-sgl-white shrink-0">
+      <nav class="max-w-6xl mx-auto px-4 md:px-8 h-14 md:h-16 flex items-center justify-between gap-3 md:gap-6">
+        <!-- Logo -->
+        <span class="font-serif text-lg md:text-xl text-sgl-white shrink-0">
           SGL<span class="text-sgl-gold">.</span>
-          <span class="font-sans text-sm text-sgl-gray-mid ml-2">Admin</span>
+          <span class="font-sans text-xs md:text-sm text-sgl-gray-mid ml-1.5">Admin</span>
         </span>
 
-        <div class="flex items-center gap-5 md:gap-7">
+        <!-- Links — ocultos en móvil, visibles desde md -->
+        <div class="hidden md:flex items-center gap-5 md:gap-7">
           <a href="/admin/dashboard"  class={navClass("/admin/dashboard")}>Dashboard</a>
           <a href="/admin/servicios"  class={navClass("/admin/servicios")}>Servicios</a>
           <a href="/admin/calendario" class={navClass("/admin/calendario")}>Calendario</a>
         </div>
 
-        <LogoutButton client:load />
+        <!-- Derecha: página actual en móvil + logout -->
+        <div class="flex items-center gap-3">
+          <!-- Indicador de sección actual solo en móvil -->
+          <span class="md:hidden font-sans text-xs text-sgl-gray-mid capitalize">
+            {pathname.split("/admin/")[1] ?? "dashboard"}
+          </span>
+          <LogoutButton client:load />
+        </div>
       </nav>
     </header>
 
