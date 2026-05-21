@@ -54,7 +54,31 @@ export default function AgendarFlow() {
       const body = await res.json();
 
       if (res.status === 201) {
-        window.location.href = `/confirmacion?id=${body.data.idExterno}`;
+        const idExterno = body.data.idExterno;
+
+        // Iniciar pago con Webpay automáticamente
+        const tbkRes = await fetch(
+          `http://localhost:8080/api/webpay/init?idExterno=${idExterno}`,
+          { method: "POST" }
+        );
+        const tbkBody = await tbkRes.json();
+
+        if (tbkRes.ok) {
+          const { token, url } = tbkBody.data;
+          const form   = document.createElement("form");
+          form.method  = "POST";
+          form.action  = url;
+          const input  = document.createElement("input");
+          input.type   = "hidden";
+          input.name   = "token_ws";
+          input.value  = token;
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+        } else {
+          // Si falla el init de Webpay, igual llevar a confirmacion para reintentar
+          window.location.href = `/confirmacion?id=${idExterno}&pago=error`;
+        }
       } else {
         setErrorEnvio(body.message ?? "Error al crear el agendamiento. Intenta nuevamente.");
       }

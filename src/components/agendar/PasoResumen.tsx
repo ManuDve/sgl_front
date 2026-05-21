@@ -1,3 +1,4 @@
+import React from "react";
 import type { DatosCliente } from "./PasoDatos";
 import type { FechaHoraSeleccion } from "./PasoFechaHora";
 
@@ -67,6 +68,9 @@ function Fila({ label, value }: { label: string; value: string }) {
 // ─── Componente principal ─────────────────────────────────────
 
 export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, onAtras, enviando = false, error = "" }: Props) {
+  const [metodoPago, setMetodoPago] = React.useState<"webpay" | null>(null);
+  const puedeConfirmar = metodoPago !== null && !enviando;
+
   return (
     <div className="flex flex-col gap-10">
 
@@ -127,19 +131,56 @@ export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, o
         </div>
       </div>
 
-      {/* SGL-078 — Métodos de pago */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-2 bg-sgl-gray border border-sgl-gold/30 text-sgl-white font-sans text-sm px-4 py-2 rounded-full">
-            <svg className="w-4 h-4 text-sgl-gold shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      {/* SGL-078 — Selección de método de pago */}
+      <div className="flex flex-col gap-3">
+        <p className="font-sans text-xs text-sgl-gold uppercase tracking-widest">
+          Método de pago
+        </p>
+
+        {/* Opción Webpay Plus */}
+        <button
+          type="button"
+          onClick={() => setMetodoPago("webpay")}
+          className={`
+            w-full flex items-center gap-4 rounded-xl border p-4 text-left
+            transition-all duration-200
+            ${metodoPago === "webpay"
+              ? "border-sgl-gold bg-sgl-gold/10"
+              : "border-sgl-gold/20 bg-sgl-gray hover:border-sgl-gold/40"
+            }
+          `}
+        >
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-200 ${metodoPago === "webpay" ? "bg-sgl-gold/20" : "bg-sgl-gold/10"}`}>
+            <svg className="w-5 h-5 text-sgl-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>
             </svg>
-            Pago por transferencia bancaria
-          </span>
-        </div>
-        <p className="font-sans text-xs text-sgl-gray-mid pl-1">
-          Próximamente: pago con tarjeta de crédito/débito.
-        </p>
+          </div>
+          <div className="flex-1">
+            <p className="font-sans text-sm font-semibold text-sgl-white">Webpay Plus</p>
+            <p className="font-sans text-xs text-sgl-gray-mid mt-0.5">Tarjeta de débito o crédito — pago seguro vía Transbank</p>
+          </div>
+          {/* Indicador de selección */}
+          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${metodoPago === "webpay" ? "border-sgl-gold bg-sgl-gold" : "border-sgl-gold/40"}`}>
+            {metodoPago === "webpay" && (
+              <svg className="w-3 h-3 text-sgl-black" viewBox="0 0 12 12" fill="none">
+                <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </div>
+        </button>
+
+        {metodoPago === "webpay" && (
+          <p className="font-sans text-xs text-sgl-gray-mid pl-1 leading-relaxed">
+            Al confirmar se creará tu cita y serás redirigido a Transbank para
+            pagar. Tu cita quedará confirmada una vez que el pago sea aprobado.
+          </p>
+        )}
+
+        {metodoPago === null && (
+          <p className="font-sans text-xs text-sgl-gray-mid/60 pl-1">
+            Selecciona un método de pago para continuar.
+          </p>
+        )}
       </div>
 
       {/* SGL-031 — Política de cancelación */}
@@ -174,14 +215,18 @@ export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, o
         <button
           type="button"
           onClick={onConfirmar}
-          disabled={enviando}
-          style={{ padding: "12px 40px", opacity: enviando ? 0.7 : 1, cursor: enviando ? "not-allowed" : "pointer" }}
+          disabled={!puedeConfirmar}
+          style={{
+            padding: "12px 40px",
+            opacity: puedeConfirmar ? 1 : 0.4,
+            cursor: puedeConfirmar ? "pointer" : "not-allowed",
+          }}
           className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold rounded transition-colors duration-200 inline-flex items-center gap-2"
         >
           {enviando && (
             <span className="w-4 h-4 border-2 border-sgl-black/30 border-t-sgl-black rounded-full animate-spin" />
           )}
-          {enviando ? "Enviando…" : "Confirmar agendamiento"}
+          {enviando ? "Procesando…" : "Confirmar y pagar"}
         </button>
       </div>
 
