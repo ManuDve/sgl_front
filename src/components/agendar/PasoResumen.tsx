@@ -116,6 +116,9 @@ export default function PasoResumen({ servicio, datos, fechaHora, onConfirmar, o
             <Fila label="Nombre"   value={datos.nombre} />
             <Fila label="Correo"   value={datos.email} />
             <Fila label="Teléfono" value={datos.telefono} />
+            {datos.descripcion && (
+              <Fila label="Nota" value={datos.descripcion} />
+            )}
           </Seccion>
 
           <div className="border-t border-sgl-gold/20" />

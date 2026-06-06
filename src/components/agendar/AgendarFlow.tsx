@@ -48,6 +48,7 @@ export default function AgendarFlow() {
           fecha:          fechaHora.fecha,
           hora:           fechaHora.hora + ":00",
           aceptaTerminos: true,
+          ...(datos.descripcion ? { descripcion: datos.descripcion } : {}),
         }),
       });
 

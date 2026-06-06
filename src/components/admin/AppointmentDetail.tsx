@@ -10,6 +10,7 @@ interface AppointmentDetail {
   servicioId: number;
   materia: string;
   descripcionServicio: string;
+  descripcion?: string;
   fecha: string;
   hora: string;
   monto: number;
@@ -255,6 +256,18 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
                 <Field label="Materia" value={detail.materia} />
                 {detail.descripcionServicio && <Field label="Descripción" value={detail.descripcionServicio} />}
               </section>
+
+              {/* Descripción del caso */}
+              {detail.descripcion && (
+                <section className="flex flex-col gap-3">
+                  <h3 className="font-sans text-xs font-semibold text-sgl-gold uppercase tracking-wider border-b border-sgl-gold/10 pb-1">Descripción del caso</h3>
+                  <div className="max-h-28 overflow-y-auto pr-1">
+                    <p className="font-sans text-sm text-sgl-gray-mid leading-relaxed whitespace-pre-wrap">
+                      {detail.descripcion}
+                    </p>
+                  </div>
+                </section>
+              )}
 
               {/* Auditoría */}
               <section className="flex flex-col gap-3">

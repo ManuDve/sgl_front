@@ -10,6 +10,7 @@ export interface DatosCliente {
   nombre: string;
   email: string;
   telefono: string;
+  descripcion?: string;
 }
 
 interface Props {
@@ -151,9 +152,10 @@ function validate(nombre: string, email: string, telefono: string): Errores {
 // ─── Componente principal ─────────────────────────────────────
 
 export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: Props) {
-  const [nombre,   setNombre]   = useState(inicial?.nombre   ?? "");
-  const [email,    setEmail]    = useState(inicial?.email    ?? "");
-  const [telefono, setTelefono] = useState(inicial?.telefono ?? "");
+  const [nombre,      setNombre]      = useState(inicial?.nombre      ?? "");
+  const [email,       setEmail]       = useState(inicial?.email       ?? "");
+  const [telefono,    setTelefono]    = useState(inicial?.telefono    ?? "");
+  const [descripcion, setDescripcion] = useState(inicial?.descripcion ?? "");
 
   const [errors,  setErrors]  = useState<Errores>({ nombre: "", email: "", telefono: "" });
   const [touched, setTouched] = useState<Touched>({ nombre: false, email: false, telefono: false });
@@ -186,7 +188,12 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
     setTouched({ nombre: true, email: true, telefono: true });
     setErrors(currentErrors);
     if (!isValid) return;
-    onContinuar({ nombre: nombre.trim(), email: email.trim(), telefono: telefono.trim() });
+    onContinuar({
+      nombre:      nombre.trim(),
+      email:       email.trim(),
+      telefono:    telefono.trim(),
+      descripcion: descripcion.trim() || undefined,
+    });
   }
 
   return (
@@ -248,6 +255,37 @@ export default function PasoDatos({ servicio, inicial, onContinuar, onAtras }: P
           error={errors.telefono}
           touched={touched.telefono}
         />
+
+        {/* SGL-019 — Descripción opcional del caso */}
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="descripcion" className="font-sans text-sm text-sgl-gray-mid">
+            Describe brevemente tu caso{" "}
+            <span className="text-sgl-gray-mid/60">(opcional)</span>
+          </label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            placeholder="Ej: Necesito orientación sobre un proceso de divorcio de mutuo acuerdo…"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            maxLength={500}
+            rows={4}
+            className="bg-sgl-black border border-sgl-gold/40 focus:border-sgl-gold rounded-lg px-4 py-3 font-sans text-sm text-sgl-white placeholder:text-sgl-gray-mid/60 focus:outline-none transition-colors duration-200 resize-none"
+          />
+          <p
+            className="font-sans text-xs text-right transition-colors duration-150"
+            style={{
+              color:
+                descripcion.length >= 500
+                  ? "rgb(248 113 113)"
+                  : descripcion.length >= 450
+                  ? "rgb(251 191 36)"
+                  : "var(--color-sgl-gray-mid)",
+            }}
+          >
+            {descripcion.length} / 500
+          </p>
+        </div>
       </div>
 
       {/* SGL-100 — Consentimientos */}
