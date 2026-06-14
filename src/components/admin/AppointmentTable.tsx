@@ -13,9 +13,9 @@ interface AppointmentSummary {
   estado: string;
 }
 
-type TabKey     = "all" | "pending" | "confirmed" | "cancelled";
-type SortDir    = "desc" | "asc";
-type PageSize   = 10 | 20 | 50;
+type TabKey   = "all" | "pending" | "confirmed" | "cancelled";
+type SortDir  = "desc" | "asc";
+type PageSize = 10 | 20 | 50;
 
 const TABS: { key: TabKey; label: string; status: string }[] = [
   { key: "all",       label: "Todos",       status: ""          },
@@ -39,6 +39,8 @@ const ESTADO_LABEL: Record<string, string> = {
 };
 
 const PAGE_SIZES: PageSize[] = [10, 20, 50];
+
+const API_BASE = "http://localhost:8080/api/admin/appointments";
 
 function formatFecha(fecha: string): string {
   const [y, m, d] = fecha.split("-");
@@ -65,7 +67,6 @@ interface PaginatorProps {
 function Paginator({ page, totalPages, total, pageSize, onPage }: PaginatorProps) {
   if (totalPages <= 1) return null;
 
-  // Rango de páginas visibles: hasta 5, centrado en la actual
   const range: (number | "…")[] = [];
   if (totalPages <= 7) {
     for (let i = 1; i <= totalPages; i++) range.push(i);
@@ -82,12 +83,10 @@ function Paginator({ page, totalPages, total, pageSize, onPage }: PaginatorProps
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-sgl-gold/10">
-      {/* Contador */}
       <span className="font-sans text-xs text-sgl-gray-mid order-2 sm:order-1">
         {inicio}–{fin} de {total} agendamiento{total !== 1 ? "s" : ""}
       </span>
 
-      {/* Botones de página */}
       <div className="flex items-center gap-1 order-1 sm:order-2">
         <button
           type="button"
@@ -100,7 +99,6 @@ function Paginator({ page, totalPages, total, pageSize, onPage }: PaginatorProps
           ←
         </button>
 
-        {/* Números — ocultos en móvil, visibles en sm+ */}
         <div className="hidden sm:flex items-center gap-1">
           {range.map((r, i) =>
             r === "…" ? (
@@ -122,7 +120,6 @@ function Paginator({ page, totalPages, total, pageSize, onPage }: PaginatorProps
           )}
         </div>
 
-        {/* Compacto en móvil */}
         <span className="sm:hidden font-sans text-sm text-sgl-white px-3">
           {page} / {totalPages}
         </span>
@@ -145,24 +142,45 @@ function Paginator({ page, totalPages, total, pageSize, onPage }: PaginatorProps
 // ── Componente principal ──────────────────────────────────────
 
 export default function AppointmentTable() {
+  // ── Estado de navegación y datos
   const [tab,          setTab]          = useState<TabKey>("pending");
   const [appointments, setAppointments] = useState<AppointmentSummary[]>([]);
   const [loading,      setLoading]      = useState(true);
   const [error,        setError]        = useState("");
   const [selectedId,   setSelectedId]   = useState<number | null>(null);
-  const [sortDir,      setSortDir]      = useState<SortDir>("desc");   // más recientes primero
+  const [sortDir,      setSortDir]      = useState<SortDir>("desc");
   const [pageSize,     setPageSize]     = useState<PageSize>(10);
   const [page,         setPage]         = useState(1);
   const [rowKey,       setRowKey]       = useState(0);
 
-  const fetchAppointments = useCallback((currentTab: TabKey) => {
+  // ── Estado de filtros (SGL-050)
+  const [search,          setSearch]          = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [desde,           setDesde]           = useState("");
+  const [hasta,           setHasta]           = useState("");
+
+  // Debounce 300 ms para el campo de búsqueda de texto
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Resetear a página 1 cuando cambian los filtros derivados
+  useEffect(() => { setPage(1); }, [debouncedSearch, desde, hasta]);
+
+  // ── Fetch central — se re-ejecuta cuando cambia cualquier dep de filtro
+  const fetchAppointments = useCallback(() => {
     const token = localStorage.getItem("sgl_token");
     if (!token) { window.location.href = "/admin/login"; return; }
 
-    const status = TABS.find(t => t.key === currentTab)?.status ?? "";
-    const url = status
-      ? `http://localhost:8080/api/admin/appointments?status=${status}`
-      : "http://localhost:8080/api/admin/appointments";
+    const qs = new URLSearchParams();
+    const statusValue = TABS.find(t => t.key === tab)?.status ?? "";
+    if (statusValue)              qs.set("estado", statusValue);
+    if (debouncedSearch.trim())   qs.set("search", debouncedSearch.trim());
+    if (desde)                    qs.set("desde",  desde);
+    if (hasta)                    qs.set("hasta",  hasta);
+
+    const url = qs.toString() ? `${API_BASE}?${qs}` : API_BASE;
 
     setLoading(true);
     setError("");
@@ -177,39 +195,66 @@ export default function AppointmentTable() {
         if (!res.ok) throw new Error();
         return res.json();
       })
-      .then((body) => { if (body) setAppointments(body.data ?? []); })
+      .then((body) => {
+        if (body) {
+          setAppointments(body.data ?? []);
+          setRowKey(k => k + 1);
+        }
+      })
       .catch(() => setError("No se pudo conectar con el servidor."))
       .finally(() => setLoading(false));
-  }, []);
+  }, [tab, debouncedSearch, desde, hasta]);
 
-  useEffect(() => { fetchAppointments(tab); }, [tab, fetchAppointments]);
+  useEffect(() => { fetchAppointments(); }, [fetchAppointments]);
 
+  // ── Handlers
   function handleTabChange(newTab: TabKey) {
     setTab(newTab);
     setSelectedId(null);
     setPage(1);
   }
+
+  function handleEstadoSelector(value: string) {
+    const newTab = TABS.find(t => t.status === value)?.key ?? "all";
+    handleTabChange(newTab);
+  }
+
   function handleSortToggle() {
     setSortDir(d => d === "desc" ? "asc" : "desc");
     setPage(1);
     setRowKey(k => k + 1);
   }
+
   function handlePageSize(ps: PageSize) {
     setPageSize(ps);
     setPage(1);
     setRowKey(k => k + 1);
   }
+
   function handlePageChange(p: number) {
     setPage(p);
     setRowKey(k => k + 1);
   }
+
   function handleStatusChanged() {
     setSelectedId(null);
-    fetchAppointments(tab);
+    fetchAppointments();
     window.dispatchEvent(new CustomEvent("appointments:changed"));
   }
 
-  // Ordenar client-side por fecha+hora
+  // Limpia solo los filtros de búsqueda/fechas (el tab es navegación propia)
+  function handleLimpiar() {
+    setSearch("");
+    setDebouncedSearch("");
+    setDesde("");
+    setHasta("");
+    setPage(1);
+  }
+
+  // ── Computed
+  const hasActiveFilters = search !== "" || desde !== "" || hasta !== "";
+  const currentStatus    = TABS.find(t => t.key === tab)?.status ?? "";
+
   const sorted = useMemo(() =>
     [...appointments].sort((a, b) =>
       sortDir === "desc" ? dateKey(b) - dateKey(a) : dateKey(a) - dateKey(b)
@@ -251,10 +296,99 @@ export default function AppointmentTable() {
         ))}
       </div>
 
+      {/* ── Barra de filtros (SGL-050) ── */}
+      <div className="flex flex-col gap-3 py-4 border-b border-sgl-gold/10">
+
+        {/* Fila 1: búsqueda + selector de estado */}
+        <div className="flex flex-col sm:flex-row gap-3">
+
+          {/* Input de búsqueda con ícono */}
+          <div className="relative flex-1 min-w-0">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sgl-gray-mid pointer-events-none"
+              viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6"
+              strokeLinecap="round" strokeLinejoin="round"
+            >
+              <circle cx="8.5" cy="8.5" r="5.5"/><path d="M15 15l-3.5-3.5"/>
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar por nombre, email o ID…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full bg-sgl-black border border-sgl-gold/30 focus:border-sgl-gold rounded-lg
+                pl-9 pr-4 py-2 font-sans text-sm text-sgl-white
+                placeholder:text-sgl-gray-mid/60 focus:outline-none transition-colors duration-200"
+            />
+          </div>
+
+          {/* Selector de estado — sincronizado con los tabs */}
+          <select
+            value={currentStatus}
+            onChange={e => handleEstadoSelector(e.target.value)}
+            className="bg-sgl-black border border-sgl-gold/30 focus:border-sgl-gold rounded-lg
+              px-3 py-2 font-sans text-sm text-sgl-white cursor-pointer
+              focus:outline-none transition-colors duration-200 sm:w-44 shrink-0"
+          >
+            <option value="">Todos los estados</option>
+            <option value="PENDING">Pendiente</option>
+            <option value="CONFIRMED">Confirmado</option>
+            <option value="CANCELLED">Cancelado</option>
+          </select>
+        </div>
+
+        {/* Fila 2: rango de fechas + botón limpiar */}
+        <div className="flex flex-wrap items-center gap-3">
+
+          <div className="flex items-center gap-2">
+            <label className="font-sans text-xs text-sgl-gray-mid whitespace-nowrap">
+              Desde
+            </label>
+            <input
+              type="date"
+              value={desde}
+              onChange={e => setDesde(e.target.value)}
+              className="bg-sgl-black border border-sgl-gold/30 focus:border-sgl-gold rounded-lg
+                px-3 py-2 font-sans text-sm text-sgl-white
+                focus:outline-none transition-colors duration-200"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="font-sans text-xs text-sgl-gray-mid whitespace-nowrap">
+              Hasta
+            </label>
+            <input
+              type="date"
+              value={hasta}
+              onChange={e => setHasta(e.target.value)}
+              className="bg-sgl-black border border-sgl-gold/30 focus:border-sgl-gold rounded-lg
+                px-3 py-2 font-sans text-sm text-sgl-white
+                focus:outline-none transition-colors duration-200"
+            />
+          </div>
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={handleLimpiar}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg
+                border border-sgl-gold/30 text-sgl-gold font-sans text-sm
+                hover:border-sgl-gold hover:bg-sgl-gold/10 transition-colors duration-150"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                strokeWidth="1.8" strokeLinecap="round">
+                <path d="M3 3l10 10M13 3L3 13"/>
+              </svg>
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* ── Controles: orden + registros por página ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3">
 
-        {/* Botón orden por fecha */}
         <button
           type="button"
           onClick={handleSortToggle}
@@ -262,14 +396,14 @@ export default function AppointmentTable() {
             font-sans text-xs text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10
             transition-colors duration-150"
         >
-          <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+            strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M2 4h12M4 8h8M6 12h4"/>
           </svg>
           Fecha: {sortDir === "desc" ? "más reciente primero" : "más antigua primero"}
           <span className="ml-0.5">{sortDir === "desc" ? "↓" : "↑"}</span>
         </button>
 
-        {/* Selector de registros por página */}
         <div className="flex items-center gap-2">
           <span className="font-sans text-xs text-sgl-gray-mid">Mostrar:</span>
           {PAGE_SIZES.map(ps => (
@@ -300,8 +434,23 @@ export default function AppointmentTable() {
           {error}
         </div>
       ) : sorted.length === 0 ? (
-        <div className="bg-sgl-gray border border-sgl-gold/10 rounded-lg px-6 py-10 text-center text-sgl-gray-mid font-sans text-sm">
-          No hay {tabLabel.toLowerCase()} para mostrar.
+        <div className="bg-sgl-gray border border-sgl-gold/10 rounded-lg px-6 py-10 text-center">
+          <p className="text-sgl-gray-mid font-sans text-sm">
+            {hasActiveFilters
+              ? "No hay resultados para los filtros aplicados."
+              : `No hay ${tabLabel.toLowerCase()} para mostrar.`
+            }
+          </p>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={handleLimpiar}
+              className="mt-3 font-sans text-xs text-sgl-gold hover:text-sgl-gold-light
+                underline underline-offset-2 transition-colors duration-150"
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -346,7 +495,6 @@ export default function AppointmentTable() {
             </table>
           </div>
 
-          {/* Paginador */}
           <Paginator
             page={safePage}
             totalPages={totalPages}
