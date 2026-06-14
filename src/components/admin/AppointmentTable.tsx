@@ -159,6 +159,9 @@ export default function AppointmentTable() {
   const [desde,           setDesde]           = useState("");
   const [hasta,           setHasta]           = useState("");
 
+  // ── Estado de exportación (SGL-051)
+  const [exporting, setExporting] = useState(false);
+
   // Debounce 300 ms para el campo de búsqueda de texto
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
@@ -240,6 +243,43 @@ export default function AppointmentTable() {
     setSelectedId(null);
     fetchAppointments();
     window.dispatchEvent(new CustomEvent("appointments:changed"));
+  }
+
+  async function handleExport() {
+    const token = localStorage.getItem("sgl_token");
+    if (!token) { window.location.href = "/admin/login"; return; }
+
+    const qs = new URLSearchParams();
+    const statusValue = TABS.find(t => t.key === tab)?.status ?? "";
+    if (statusValue)            qs.set("estado", statusValue);
+    if (debouncedSearch.trim()) qs.set("search", debouncedSearch.trim());
+    if (desde)                  qs.set("desde",  desde);
+    if (hasta)                  qs.set("hasta",  hasta);
+
+    const url = `${API_BASE}/export${qs.toString() ? `?${qs}` : ""}`;
+
+    setExporting(true);
+    try {
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.status === 401) {
+        localStorage.removeItem("sgl_token");
+        window.location.href = "/admin/login";
+        return;
+      }
+      if (!res.ok) throw new Error();
+
+      const blob = await res.blob();
+      const filename = `agendamientos_${new Date().toISOString().slice(0, 10)}.csv`;
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch {
+      // error silencioso — el backend retorna errores de red, no de negocio
+    } finally {
+      setExporting(false);
+    }
   }
 
   // Limpia solo los filtros de búsqueda/fechas (el tab es navegación propia)
@@ -404,22 +444,47 @@ export default function AppointmentTable() {
           <span className="ml-0.5">{sortDir === "desc" ? "↓" : "↑"}</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          <span className="font-sans text-xs text-sgl-gray-mid">Mostrar:</span>
-          {PAGE_SIZES.map(ps => (
-            <button
-              key={ps}
-              type="button"
-              onClick={() => handlePageSize(ps)}
-              className={`px-2.5 py-1 rounded font-sans text-xs font-medium transition-colors duration-150 ${
-                pageSize === ps
-                  ? "bg-sgl-gold text-sgl-black"
-                  : "border border-sgl-gold/20 text-sgl-gray-mid hover:border-sgl-gold/40 hover:text-sgl-white"
-              }`}
-            >
-              {ps}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-3">
+
+          {/* Exportar CSV (SGL-051) */}
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={exporting}
+            style={{ opacity: exporting ? 0.5 : 1, cursor: exporting ? "not-allowed" : "pointer" }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-sgl-gold/30
+              font-sans text-xs text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10
+              transition-colors duration-150"
+          >
+            {exporting ? (
+              <span className="inline-block w-3 h-3 border-[1.5px] border-sgl-gold/40 border-t-sgl-gold rounded-full animate-spin" />
+            ) : (
+              <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+                strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 2v8M5 7l3 3 3-3M3 13h10"/>
+              </svg>
+            )}
+            {exporting ? "Exportando…" : "Exportar CSV"}
+          </button>
+
+          {/* Registros por página */}
+          <div className="flex items-center gap-2">
+            <span className="font-sans text-xs text-sgl-gray-mid">Mostrar:</span>
+            {PAGE_SIZES.map(ps => (
+              <button
+                key={ps}
+                type="button"
+                onClick={() => handlePageSize(ps)}
+                className={`px-2.5 py-1 rounded font-sans text-xs font-medium transition-colors duration-150 ${
+                  pageSize === ps
+                    ? "bg-sgl-gold text-sgl-black"
+                    : "border border-sgl-gold/20 text-sgl-gray-mid hover:border-sgl-gold/40 hover:text-sgl-white"
+                }`}
+              >
+                {ps}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
