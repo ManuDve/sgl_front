@@ -50,8 +50,18 @@ export default function ConfirmacionView() {
     const id    = params.get("id");
     const pago  = params.get("pago") as PagoEstado;
     if (pago) setPagoEstado(pago);
-    if (id) setIdExterno(id);
-    if (!id) { setError("No se encontró el ID de la cita."); setLoading(false); return; }
+    // Solo guardar el ID si tiene el formato esperado AG-XXXX-NNNN
+    const idValido = id && id.startsWith("AG-");
+    if (idValido) setIdExterno(id!);
+    if (!idValido) {
+      setError(
+        pago
+          ? "El pago fue cancelado. Si ya tenías una cita creada, busca el ID en tu correo de confirmación."
+          : "No se encontró el ID de la cita."
+      );
+      setLoading(false);
+      return;
+    }
 
     fetch(`http://localhost:8080/api/appointments/${id}`)
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
