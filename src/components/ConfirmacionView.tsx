@@ -36,6 +36,7 @@ type PagoEstado = "ok" | "rechazado" | "cancelado" | "error" | null;
 
 export default function ConfirmacionView() {
   const [apt,           setApt]          = useState<Appointment | null>(null);
+  const [idExterno,     setIdExterno]    = useState("");
   const [loading,       setLoading]      = useState(true);
   const [error,         setError]        = useState("");
   const [visible,       setVisible]      = useState(false);
@@ -49,6 +50,7 @@ export default function ConfirmacionView() {
     const id    = params.get("id");
     const pago  = params.get("pago") as PagoEstado;
     if (pago) setPagoEstado(pago);
+    if (id) setIdExterno(id);
     if (!id) { setError("No se encontró el ID de la cita."); setLoading(false); return; }
 
     fetch(`http://localhost:8080/api/appointments/${id}`)
@@ -69,12 +71,13 @@ export default function ConfirmacionView() {
   }
 
   async function handlePagarWebpay() {
-    if (!apt) return;
+    const id = apt?.idExterno ?? idExterno;
+    if (!id) return;
     setIniciandoPago(true);
     setErrorPago("");
     try {
       const res = await fetch(
-        `http://localhost:8080/api/webpay/init?idExterno=${apt.idExterno}`,
+        `http://localhost:8080/api/webpay/init?idExterno=${id}`,
         { method: "POST" }
       );
       const body = await res.json();
@@ -122,12 +125,55 @@ export default function ConfirmacionView() {
   // ── Error ─────────────────────────────────────────────────────
   if (error) {
     return (
-      <div className="max-w-lg mx-auto w-full">
+      <div className="max-w-lg mx-auto w-full flex flex-col gap-6">
         <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-6 py-5 text-red-400 font-sans text-sm">
           {error}
         </div>
-        <a href="/" className="mt-6 inline-block font-sans text-sm text-sgl-gold hover:text-sgl-gold-light transition-colors">
-          ← Volver al inicio
+
+        {idExterno && (
+          <>
+            <div className="text-center">
+              <p className="font-sans text-xs text-sgl-gray-mid uppercase tracking-widest mb-2">
+                ID de tu cita
+              </p>
+              <p className="font-mono text-4xl md:text-5xl font-bold text-sgl-gold tracking-wider">
+                {idExterno}
+              </p>
+              <p className="font-sans text-xs text-sgl-gray-mid mt-2">
+                Guarda este código — lo necesitarás para consultas o cambios
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handlePagarWebpay}
+              disabled={iniciandoPago}
+              className="w-full bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              style={{ padding: "14px 24px", opacity: iniciandoPago ? 0.7 : 1, cursor: iniciandoPago ? "not-allowed" : "pointer" }}
+            >
+              {iniciandoPago ? (
+                <><span className="w-4 h-4 border-2 border-sgl-black/30 border-t-sgl-black rounded-full animate-spin" />Redirigiendo a Transbank…</>
+              ) : (
+                <><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Reintentar pago con Webpay</>
+              )}
+            </button>
+
+            {errorPago && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 font-sans text-xs">
+                {errorPago}
+              </div>
+            )}
+          </>
+        )}
+
+        <a
+          href="/"
+          className="font-sans text-sm text-sgl-gray-mid hover:text-sgl-gold transition-colors duration-200 inline-flex items-center gap-1.5"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+            <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Volver al inicio
         </a>
       </div>
     );
