@@ -1,43 +1,68 @@
-# Astro Starter Kit: Minimal
+# SGL Frontend
 
-```sh
-npm create astro@latest -- --template minimal
+Aplicación web del Sistema de Gestion Legal. Incluye el flujo publico de agendamiento de consultas y el panel de administración.
+
+## Descripción del proyecto
+
+SGL es una Plataforma de Reserva y Coordinación Jurídica. El frontend tiene dos partes: el sitio público donde los clientes pueden agendar una consulta legal sin crear una cuenta, y el panel de administración donde el equipo del estudio gestiona agendamientos, confirma pagos y administra los servicios disponibles.
+
+El flujo de agendamiento es un formulario de cuatro pasos que guía al cliente desde la selección del servicio hasta el resumen y la confirmación. El panel admin incluye filtros, exportación a CSV, calendario de citas y gestión de precios.
+
+## Tecnologías
+
+- Astro 6
+- React 19
+- Tailwind CSS v4
+- TypeScript
+
+## Estructura del equipo
+
+| Nombre | Rol |
+|--------|-----|
+| Manuel Alfaro | Desarrollador |
+
+## Tablero Kanban
+
+https://gestor-legal.atlassian.net/jira/software/projects/DEV/boards/1
+
+## Confluence
+
+https://gestor-legal.atlassian.net/wiki/spaces/~7120201ea05b60bb4f43c98ac238acf9179f38/pages/edit-v2/17268737
+
+La documentacion adicional esta disponible en la carpeta `DOCUMENTACION/`.
+
+## Requisitos
+
+- Node.js 22.12.0 o superior
+
+## Configuracion local
+
+**1. Instalar dependencias**
+
+```bash
+npm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**2. Variables de entorno**
 
-## 🚀 Project Structure
+Crear un archivo `.env` en la raiz del proyecto con:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+PUBLIC_API_URL=http://localhost:8080/api
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+**3. Ejecutar**
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+npm run dev
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+La aplicación queda disponible en http://localhost:4321. Requiere que el backend este corriendo en http://localhost:8080.
 
-## 🧞 Commands
+## Build de produccion
 
-All commands are run from the root of the project, from a terminal:
+```bash
+npm run build
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+La salida queda en la carpeta `dist/` lista para servirse como archivos estáticos.
