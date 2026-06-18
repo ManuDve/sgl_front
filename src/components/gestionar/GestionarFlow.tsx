@@ -18,13 +18,15 @@ interface CitaDetalle {
   estado: string;
 }
 
-// "solicitar" = pedir OTP (email/tel)
-// "verificar" = ingresar código recibido
-// "opciones"  = elegir qué hacer
-// "fecha-hora"= seleccionar nuevo slot
-// "resumen"   = confirmar cambio
-// "exito"     = éxito
-type Paso = "solicitar" | "verificar" | "opciones" | "fecha-hora" | "resumen" | "exito";
+// "solicitar"         = pedir OTP (email/tel)
+// "verificar"         = ingresar código recibido
+// "opciones"          = elegir qué hacer
+// "fecha-hora"        = seleccionar nuevo slot (reagendar)
+// "resumen"           = confirmar reagendamiento
+// "exito"             = éxito reagendamiento
+// "confirmar-cancelar"= confirmación destructiva de cancelación
+// "exito-cancelar"    = éxito cancelación
+type Paso = "solicitar" | "verificar" | "opciones" | "fecha-hora" | "resumen" | "exito" | "confirmar-cancelar" | "exito-cancelar";
 
 interface Props {}
 
@@ -127,6 +129,10 @@ export default function GestionarFlow(_props: Props) {
   const [enviando, setEnviando]       = useState(false);
   const [errorEnvio, setErrorEnvio]   = useState("");
 
+  // Cancelar
+  const [cancelando, setCancelando]     = useState(false);
+  const [errorCancelar, setErrorCancelar] = useState("");
+
   // Formulario de búsqueda (cuando no hay ?id= en URL)
   const [idInput, setIdInput]         = useState("");
 
@@ -208,6 +214,25 @@ export default function GestionarFlow(_props: Props) {
     }
   }
 
+  // ── Cancelar cita ─────────────────────────────────────────────
+  async function doCancel() {
+    setCancelando(true);
+    setErrorCancelar("");
+    try {
+      const r = await fetch(`${API}/appointments/${idExterno}/cancelar`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const b = await r.json();
+      if (!r.ok) throw new Error(b.error ?? "No se pudo cancelar la cita.");
+      goTo("exito-cancelar", "forward");
+    } catch (e: any) {
+      setErrorCancelar(e.message ?? "No se pudo cancelar la cita.");
+    } finally {
+      setCancelando(false);
+    }
+  }
+
   // ── Confirmar reagendamiento ──────────────────────────────────
   async function doReagendar() {
     if (!nuevaFechaHora) return;
@@ -245,7 +270,7 @@ export default function GestionarFlow(_props: Props) {
         <div className="flex flex-col gap-2">
           <h1 className="font-serif text-3xl font-semibold text-sgl-white">Gestionar cita</h1>
           <p className="font-sans text-base text-sgl-gray-mid leading-relaxed max-w-sm mx-auto">
-            Ingresa el ID de tu cita (formato AG-XXXX-NNNN) para reagendarla.
+            Ingresa el ID de tu cita (formato AG-XXXX-NNNN) para reagendarla o cancelarla.
           </p>
         </div>
 
@@ -515,14 +540,33 @@ export default function GestionarFlow(_props: Props) {
                 </svg>
               </button>
 
+              <button
+                type="button"
+                onClick={() => { setErrorCancelar(""); goTo("confirmar-cancelar", "forward"); }}
+                className="w-full flex items-center gap-4 rounded-xl border border-red-500/20 bg-sgl-gray p-5 text-left hover:border-red-500/40 hover:bg-red-500/5 transition-all duration-200 group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 group-hover:bg-red-500/20 transition-colors duration-200">
+                  <svg className="w-5 h-5 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-sans text-sm font-semibold text-red-400">Cancelar cita</p>
+                  <p className="font-sans text-xs text-sgl-gray-mid mt-0.5">Esta acción no se puede deshacer</p>
+                </div>
+                <svg className="w-4 h-4 text-red-400/40 group-hover:text-red-400/70 transition-colors duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+
               <div className="flex items-start gap-3 bg-sgl-gray border border-sgl-gray-light/10 rounded-xl px-4 py-3">
                 <svg className="w-4 h-4 text-sgl-gold shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
                 </svg>
                 <p className="font-sans text-xs text-sgl-gray-mid leading-relaxed">
                   <span className="text-sgl-white font-medium">Política:</span>{" "}
-                  el reagendamiento requiere al menos 24 horas de anticipación respecto a tu cita actual.
-                  Sujeto a disponibilidad de horarios.
+                  tanto el reagendamiento como la cancelación requieren al menos 24 horas de anticipación
+                  respecto a tu cita actual.
                 </p>
               </div>
             </div>
@@ -600,6 +644,108 @@ export default function GestionarFlow(_props: Props) {
                 {enviando ? "Reagendando…" : "Confirmar cambio"}
               </button>
             </div>
+          </div>
+        )}
+
+        {/* ══ PASO: confirmar-cancelar ═════════════════════════ */}
+        {paso === "confirmar-cancelar" && cita && (
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <h2 className="font-serif text-2xl font-semibold text-sgl-white">
+                Cancelar cita
+              </h2>
+              <p className="font-sans text-sm text-sgl-gray-mid leading-relaxed">
+                Esta acción es permanente y no se puede deshacer.
+              </p>
+            </div>
+
+            {/* Detalles de la cita a cancelar */}
+            <div className="relative rounded-xl border border-red-500/20 bg-sgl-gray overflow-hidden">
+              <div className="h-px w-full" style={{ background: "linear-gradient(90deg,transparent,rgba(239,68,68,0.4),transparent)" }} />
+              <div className="p-5 flex flex-col gap-3">
+                <p className="font-sans text-xs text-red-400 uppercase tracking-widest">Cita a cancelar</p>
+                <div className="flex flex-col gap-2">
+                  <Fila label="Servicio" value={cita.materia} />
+                  <Fila label="Fecha"    value={formatFecha(cita.fecha)} />
+                  <Fila label="Hora"     value={formatHora(cita.hora)} />
+                  <Fila label="ID"       value={cita.idExterno} />
+                </div>
+              </div>
+            </div>
+
+            {errorCancelar && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-4 text-red-400 font-sans text-sm">
+                {errorCancelar}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => goTo("opciones", "back")}
+                disabled={cancelando}
+                style={{ padding: "12px 32px", opacity: cancelando ? 0.4 : 1, cursor: cancelando ? "not-allowed" : "pointer" }}
+                className="border border-sgl-gold/40 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold rounded transition-colors duration-200"
+              >
+                Volver
+              </button>
+              <button
+                type="button"
+                onClick={doCancel}
+                disabled={cancelando}
+                style={{
+                  padding: "12px 32px",
+                  opacity: cancelando ? 0.4 : 1,
+                  cursor:  cancelando ? "not-allowed" : "pointer",
+                  background: "rgba(239,68,68,0.12)",
+                  border: "1px solid rgba(239,68,68,0.35)",
+                }}
+                className="text-red-400 hover:text-red-300 font-semibold rounded transition-all duration-200 inline-flex items-center gap-2"
+              >
+                {cancelando && <span className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />}
+                {cancelando ? "Cancelando…" : "Sí, cancelar mi cita"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ══ PASO: exito-cancelar ═════════════════════════════ */}
+        {paso === "exito-cancelar" && cita && (
+          <div className="flex flex-col items-center gap-8 py-6 text-center">
+            <div
+              className="w-20 h-20 rounded-full flex items-center justify-center"
+              style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)" }}
+            >
+              <svg className="w-10 h-10 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 12l3 3 5-5"/>
+              </svg>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <h2 className="font-serif text-3xl font-semibold text-sgl-white">Cita cancelada</h2>
+              <p className="font-sans text-base text-sgl-gray-mid leading-relaxed max-w-xs mx-auto">
+                Tu cita ha sido cancelada exitosamente.
+              </p>
+            </div>
+
+            <div className="relative rounded-xl border border-sgl-gray-light/10 bg-sgl-gray overflow-hidden w-full max-w-sm">
+              <div className="p-6 flex flex-col gap-3">
+                <p className="font-sans text-xs text-sgl-gray-mid uppercase tracking-widest">Cita cancelada</p>
+                <div className="flex flex-col gap-2">
+                  <Fila label="Servicio" value={cita.materia} />
+                  <Fila label="Fecha"    value={formatFecha(cita.fecha)} />
+                  <Fila label="ID"       value={cita.idExterno} />
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="/agendar"
+              className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-8 py-3 rounded transition-colors duration-200"
+            >
+              Agendar nueva consulta
+            </a>
           </div>
         )}
 

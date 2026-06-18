@@ -455,7 +455,7 @@ export default function ConfirmacionView() {
         )}
       </div>
 
-      {/* Reagendar — solo si la cita no está CANCELLED */}
+      {/* Gestionar — solo si la cita no está CANCELLED */}
       {apt.estado !== "CANCELLED" && (
         <div className="w-full" style={transition(850)}>
           <a
@@ -467,7 +467,7 @@ export default function ConfirmacionView() {
               <rect x="3" y="4" width="18" height="18" rx="2"/>
               <path d="M16 2v4M8 2v4M3 10h18"/>
             </svg>
-            Reagendar mi cita
+            Gestionar mi cita
           </a>
         </div>
       )}
