@@ -455,8 +455,25 @@ export default function ConfirmacionView() {
         )}
       </div>
 
+      {/* Reagendar — solo si la cita no está CANCELLED */}
+      {apt.estado !== "CANCELLED" && (
+        <div className="w-full" style={transition(850)}>
+          <a
+            href={`/gestionar?id=${apt.idExterno}`}
+            className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold rounded-lg border border-sgl-gold/30 text-sgl-gold hover:border-sgl-gold/60 hover:bg-sgl-gold/5 transition-all duration-200"
+            style={{ padding: "12px 24px" }}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            Reagendar mi cita
+          </a>
+        </div>
+      )}
+
       {/* Volver al inicio */}
-      <div style={transition(800)}>
+      <div style={transition(900)}>
         <a
           href="/"
           className="font-sans text-sm text-sgl-gray-mid hover:text-sgl-gold transition-colors duration-200 inline-flex items-center gap-1.5"

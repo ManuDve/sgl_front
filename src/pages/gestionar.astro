@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GestionarFlow from "../components/gestionar/GestionarFlow";
+---
+
+<BaseLayout
+  title="Gestionar cita — SGL"
+  description="Reagenda tu consulta legal de forma rápida y segura."
+>
+  <main class="min-h-screen pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="max-w-2xl mx-auto px-4 md:px-8">
+      <GestionarFlow client:load />
+    </div>
+  </main>
+</BaseLayout>
