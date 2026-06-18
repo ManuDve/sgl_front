@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
 import RescheduleModal from "./RescheduleModal";
+import CancelAppointmentModal from "./CancelAppointmentModal";
 
 interface NotificationLogEntry {
   id:           number;
@@ -92,11 +93,9 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
   const [detail,   setDetail]   = useState<AppointmentDetail | null>(null);
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
-  const [updating,        setUpdating]        = useState(false);
-  const [updateError,     setUpdateError]     = useState("");
-  const [confirmCancel,   setConfirmCancel]   = useState(false);
   const [paymentModal,    setPaymentModal]    = useState(false);
   const [rescheduleModal, setRescheduleModal] = useState(false);
+  const [cancelModal,     setCancelModal]     = useState(false);
   const [mounted,         setMounted]         = useState(false);
 
   const [notifOpen,    setNotifOpen]    = useState(false);
@@ -114,10 +113,9 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
   const handleClose = useCallback(() => {
     setDetail(null);
     setError("");
-    setUpdateError("");
-    setConfirmCancel(false);
     setPaymentModal(false);
     setRescheduleModal(false);
+    setCancelModal(false);
     resetNotif();
     onClose();
   }, [onClose, resetNotif]);
@@ -139,6 +137,7 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
   useEffect(() => {
     if (id === null) return;
     resetNotif();
+    setCancelModal(false);
   }, [id, resetNotif]);
 
   async function fetchNotifLogs() {
@@ -175,8 +174,6 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
 
     setLoading(true);
     setError("");
-    setUpdateError("");
-    setConfirmCancel(false);
     setDetail(null);
 
     fetch(`http://localhost:8080/api/admin/appointments/${id}`, {
@@ -191,37 +188,6 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
       .catch(() => setError("No se pudo cargar el detalle."))
       .finally(() => setLoading(false));
   }, [id]);
-
-  async function handleChangeStatus(nuevoEstado: string) {
-    if (!detail) return;
-    const token = localStorage.getItem("sgl_token");
-    if (!token) { window.location.href = "/admin/login"; return; }
-
-    setUpdating(true);
-    setUpdateError("");
-
-    try {
-      const res = await fetch(`http://localhost:8080/api/admin/appointments/${detail.id}/estado`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ estado: nuevoEstado }),
-      });
-
-      if (res.status === 401) { localStorage.removeItem("sgl_token"); window.location.href = "/admin/login"; return; }
-      if (!res.ok) {
-        const body = await res.json();
-        setUpdateError(body.message ?? "Error al cambiar el estado.");
-        return;
-      }
-
-      onStatusChanged?.();
-      handleClose();
-    } catch {
-      setUpdateError("No se pudo conectar con el servidor.");
-    } finally {
-      setUpdating(false);
-    }
-  }
 
   if (id === null) return null;
 
@@ -251,10 +217,22 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
     />
   ) : null;
 
+  // Modal secundario de cancelación
+  const cancelOverlay = cancelModal && detail ? (
+    <CancelAppointmentModal
+      appointmentId={detail.id}
+      idExterno={detail.idExterno}
+      nombreCliente={detail.nombreCliente}
+      onClose={() => setCancelModal(false)}
+      onSuccess={() => { onStatusChanged?.(); handleClose(); }}
+    />
+  ) : null;
+
   return (
     <>
     {paymentOverlay}
     {rescheduleOverlay}
+    {cancelOverlay}
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
       onClick={handleClose}
@@ -460,78 +438,37 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
 
         {/* Footer con acciones */}
         {detail && (
-          <div className="px-6 py-4 border-t border-sgl-gold/10 flex flex-col gap-3"
-            style={{ minHeight: "72px" }}>
-
-            {updateError && (
-              <p className="font-sans text-xs text-red-400 text-center">{updateError}</p>
-            )}
-
-            {/* ── Modo normal ── */}
-            <div
-              className="flex items-center justify-between gap-3 transition-opacity duration-200"
-              style={{ opacity: confirmCancel ? 0 : 1, pointerEvents: confirmCancel ? "none" : "auto", position: confirmCancel ? "absolute" : "relative" }}
-            >
-              <button onClick={handleClose}
-                className="border border-sgl-gold/40 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200">
-                Cerrar
-              </button>
-              <div className="flex items-center gap-2">
-                {detail.estado === "PENDING" && (
-                  <button
-                    onClick={() => setPaymentModal(true)}
-                    className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
-                  >
-                    Confirmar pago
-                  </button>
-                )}
-                {detail.estado !== "CANCELLED" && (
-                  <button
-                    onClick={() => setRescheduleModal(true)}
-                    className="border border-sgl-gold/50 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
-                  >
-                    Reagendar
-                  </button>
-                )}
-                {(detail.estado === "PENDING" || detail.estado === "CONFIRMED") && (
-                  <button
-                    onClick={() => setConfirmCancel(true)}
-                    className="border border-red-500/60 text-red-400 hover:bg-red-500/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
-                  >
-                    Cancelar
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* ── Confirmación de cancelación ── */}
-            <div
-              className="flex flex-col gap-3 transition-opacity duration-200"
-              style={{ opacity: confirmCancel ? 1 : 0, pointerEvents: confirmCancel ? "auto" : "none", position: confirmCancel ? "relative" : "absolute" }}
-            >
-              <p className="font-sans text-sm text-sgl-white text-center">
-                ¿Seguro que deseas cancelar esta cita?{" "}
-                <span className="text-sgl-gray-mid">Esta acción no se puede deshacer.</span>
-              </p>
-              <div className="flex items-center justify-center gap-3">
+          <div className="px-6 py-4 border-t border-sgl-gold/10 flex items-center justify-between gap-3">
+            <button onClick={handleClose}
+              className="border border-sgl-gold/40 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200">
+              Cerrar
+            </button>
+            <div className="flex items-center gap-2">
+              {detail.estado === "PENDING" && (
                 <button
-                  onClick={() => setConfirmCancel(false)}
-                  className="border border-sgl-gold/40 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
+                  onClick={() => setPaymentModal(true)}
+                  className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
                 >
-                  No, volver
+                  Confirmar pago
                 </button>
+              )}
+              {detail.estado !== "CANCELLED" && (
                 <button
-                  onClick={() => handleChangeStatus("CANCELADO")}
-                  disabled={updating}
-                  style={{ opacity: updating ? 0.6 : 1, cursor: updating ? "not-allowed" : "pointer" }}
-                  className="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded text-sm transition-colors duration-200 inline-flex items-center gap-2"
+                  onClick={() => setRescheduleModal(true)}
+                  className="border border-sgl-gold/50 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
                 >
-                  {updating && <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-                  Sí, cancelar cita
+                  Reagendar
                 </button>
-              </div>
+              )}
+              {(detail.estado === "PENDING" || detail.estado === "CONFIRMED") && (
+                <button
+                  onClick={() => setCancelModal(true)}
+                  className="border border-red-500/60 text-red-400 hover:bg-red-500/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
+                >
+                  Cancelar
+                </button>
+              )}
             </div>
-
           </div>
         )}
       </div>

@@ -52,12 +52,14 @@ function KPICard({ label, value, accent = "text-sgl-white", index = 0 }: KPICard
 }
 
 export default function DashboardKPIs() {
-  const [kpis, setKpis] = useState<KPIs | null>(null);
+  const [kpis,  setKpis]  = useState<KPIs | null>(null);
+  const [error, setError] = useState(false);
 
   function fetchKPIs() {
     const token = localStorage.getItem("sgl_token");
     if (!token) { window.location.href = "/admin/login"; return; }
 
+    setError(false);
     fetch("http://localhost:8080/api/admin/appointments", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -71,7 +73,7 @@ export default function DashboardKPIs() {
         return res.json();
       })
       .then((body) => { if (body) setKpis(computeKPIs(body.data ?? [])); })
-      .catch(() => setKpis({ pendientes: 0, confirmados: 0, cancelados: 0, ingresos: 0 }));
+      .catch(() => setError(true));
   }
 
   useEffect(() => {
@@ -79,6 +81,14 @@ export default function DashboardKPIs() {
     window.addEventListener("appointments:changed", fetchKPIs);
     return () => window.removeEventListener("appointments:changed", fetchKPIs);
   }, []);
+
+  if (error) {
+    return (
+      <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-5 py-4 text-red-400 font-sans text-sm">
+        No se pudieron cargar los KPIs. Verifica la conexión con el servidor.
+      </div>
+    );
+  }
 
   if (!kpis) {
     return (
