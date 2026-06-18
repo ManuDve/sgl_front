@@ -115,6 +115,7 @@ export default function GestionarFlow(_props: Props) {
   const [contacto, setContacto]       = useState("");
   const [solicitando, setSolicitando] = useState(false);
   const [errorSolicitar, setErrorSolicitar] = useState("");
+  const [cooldownSegs, setCooldownSegs] = useState(0);
 
   // Paso "verificar"
   const [otpInput, setOtpInput]       = useState("");
@@ -168,6 +169,13 @@ export default function GestionarFlow(_props: Props) {
     if (otpFromUrl) doVerificar(otpFromUrl);
   }, [otpFromUrl]);
 
+  // Countdown de cooldown: decrementa 1s mientras sea > 0
+  useEffect(() => {
+    if (cooldownSegs <= 0) return;
+    const id = setInterval(() => setCooldownSegs(s => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, [cooldownSegs > 0]);
+
   // ── Solicitar OTP ─────────────────────────────────────────────
   async function doSolicitarOtp() {
     setSolicitando(true);
@@ -182,8 +190,16 @@ export default function GestionarFlow(_props: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      // La API siempre retorna 200 para no revelar si la cita existe (anti-enumeración)
+      if (r.status === 429) {
+        const b = await r.json();
+        const segs = b.data?.retryAfterSeconds ?? 60;
+        setCooldownSegs(segs);
+        setErrorSolicitar(b.message ?? "Debes esperar antes de solicitar un nuevo código.");
+        return;
+      }
+      // La API retorna 200 para no revelar si la cita existe (anti-enumeración)
       if (!r.ok) { const b = await r.json(); throw new Error(b.error ?? "Error al solicitar el código."); }
+      setCooldownSegs(60);
       setOtpInput("");
       goTo("verificar", "forward");
     } catch (e: any) {
@@ -393,18 +409,22 @@ export default function GestionarFlow(_props: Props) {
             <button
               type="button"
               onClick={doSolicitarOtp}
-              disabled={!contacto.trim() || solicitando}
+              disabled={!contacto.trim() || solicitando || cooldownSegs > 0}
               style={{
                 padding: "14px 40px",
-                opacity: contacto.trim() && !solicitando ? 1 : 0.4,
-                cursor:  contacto.trim() && !solicitando ? "pointer" : "not-allowed",
+                opacity: contacto.trim() && !solicitando && cooldownSegs === 0 ? 1 : 0.4,
+                cursor:  contacto.trim() && !solicitando && cooldownSegs === 0 ? "pointer" : "not-allowed",
               }}
               className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold rounded transition-colors duration-200 inline-flex items-center justify-center gap-2"
             >
               {solicitando && (
                 <span className="w-4 h-4 border-2 border-sgl-black/30 border-t-sgl-black rounded-full animate-spin" />
               )}
-              {solicitando ? "Enviando código…" : "Enviar código de verificación"}
+              {solicitando
+                ? "Enviando código…"
+                : cooldownSegs > 0
+                ? `Reenviar en ${cooldownSegs}s`
+                : "Enviar código de verificación"}
             </button>
 
             <p className="font-sans text-xs text-sgl-gray-mid/60 text-center leading-relaxed">
@@ -479,13 +499,19 @@ export default function GestionarFlow(_props: Props) {
                 </button>
 
                 <div className="flex items-center justify-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => goTo("solicitar", "back")}
-                    className="font-sans text-xs text-sgl-gray-mid/60 hover:text-sgl-gold transition-colors duration-200"
-                  >
-                    ← Solicitar un nuevo código
-                  </button>
+                  {cooldownSegs > 0 ? (
+                    <span className="font-sans text-xs text-sgl-gray-mid/40">
+                      Reenviar código disponible en {cooldownSegs}s
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => goTo("solicitar", "back")}
+                      className="font-sans text-xs text-sgl-gray-mid/60 hover:text-sgl-gold transition-colors duration-200"
+                    >
+                      ← Solicitar un nuevo código
+                    </button>
+                  )}
                 </div>
               </>
             )}
