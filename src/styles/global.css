@@ -87,6 +87,9 @@ details[open] .svc-chevron { transform: rotate(180deg); }
 details[open] .svc-body { grid-template-rows: 1fr; }
 .svc-body > div { overflow: hidden; }
 
+/* Botón nativo del selector de fechas visible en fondos oscuros */
+input[type="date"] { color-scheme: dark; }
+
 @theme {
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
   --z-index-60: 60; /* Modal secundario sobre modal principal (z-50) */

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
+import RescheduleModal from "./RescheduleModal";
 
 interface NotificationLogEntry {
   id:           number;
@@ -26,6 +27,7 @@ interface AppointmentDetail {
   hora: string;
   monto: number;
   estado: string;
+  reagendado: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,17 +45,15 @@ const NOTIF_ESTADO_BADGE: Record<string, string> = {
 };
 
 const BADGE_CLASS: Record<string, string> = {
-  PENDING:     "bg-sgl-gold/20 text-sgl-gold border border-sgl-gold/30",
-  CONFIRMED:   "bg-green-500/20 text-green-400 border border-green-500/30",
-  CANCELLED:   "bg-red-500/20 text-red-400 border border-red-500/30",
-  RESCHEDULED: "bg-sgl-gray-mid/20 text-sgl-gray-mid border border-sgl-gray-mid/30",
+  PENDING:   "bg-sgl-gold/20 text-sgl-gold border border-sgl-gold/30",
+  CONFIRMED: "bg-green-500/20 text-green-400 border border-green-500/30",
+  CANCELLED: "bg-red-500/20 text-red-400 border border-red-500/30",
 };
 
 const ESTADO_LABEL: Record<string, string> = {
-  PENDING:     "Pendiente",
-  CONFIRMED:   "Confirmado",
-  CANCELLED:   "Cancelado",
-  RESCHEDULED: "Reagendado",
+  PENDING:   "Pendiente",
+  CONFIRMED: "Confirmado",
+  CANCELLED: "Cancelado",
 };
 
 function formatFecha(fecha: string) {
@@ -96,6 +96,7 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
   const [updateError,     setUpdateError]     = useState("");
   const [confirmCancel,   setConfirmCancel]   = useState(false);
   const [paymentModal,    setPaymentModal]    = useState(false);
+  const [rescheduleModal, setRescheduleModal] = useState(false);
   const [mounted,         setMounted]         = useState(false);
 
   const [notifOpen,    setNotifOpen]    = useState(false);
@@ -116,6 +117,7 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
     setUpdateError("");
     setConfirmCancel(false);
     setPaymentModal(false);
+    setRescheduleModal(false);
     resetNotif();
     onClose();
   }, [onClose, resetNotif]);
@@ -235,9 +237,24 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
     />
   ) : null;
 
+  // Modal secundario de reagendamiento
+  const rescheduleOverlay = rescheduleModal && detail ? (
+    <RescheduleModal
+      appointmentId={detail.id}
+      idExterno={detail.idExterno}
+      nombreCliente={detail.nombreCliente}
+      servicioId={detail.servicioId}
+      materia={detail.materia}
+      monto={detail.monto}
+      onClose={() => setRescheduleModal(false)}
+      onSuccess={() => { onStatusChanged?.(); handleClose(); }}
+    />
+  ) : null;
+
   return (
     <>
     {paymentOverlay}
+    {rescheduleOverlay}
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
       onClick={handleClose}
@@ -291,10 +308,15 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
             <div className="flex flex-col gap-6">
 
               {/* Estado */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${BADGE_CLASS[detail.estado] ?? BADGE_CLASS.PENDING}`}>
                   {ESTADO_LABEL[detail.estado] ?? detail.estado}
                 </span>
+                {detail.reagendado && (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/15 text-blue-400 border border-blue-500/25">
+                    Reagendado
+                  </span>
+                )}
               </div>
 
               {/* Cita */}
@@ -461,6 +483,14 @@ export default function AppointmentDetail({ id, onClose, onStatusChanged }: Prop
                     className="bg-sgl-gold hover:bg-sgl-gold-light text-sgl-black font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
                   >
                     Confirmar pago
+                  </button>
+                )}
+                {detail.estado !== "CANCELLED" && (
+                  <button
+                    onClick={() => setRescheduleModal(true)}
+                    className="border border-sgl-gold/50 text-sgl-gold hover:border-sgl-gold hover:bg-sgl-gold/10 font-semibold px-5 py-2 rounded text-sm transition-colors duration-200"
+                  >
+                    Reagendar
                   </button>
                 )}
                 {(detail.estado === "PENDING" || detail.estado === "CONFIRMED") && (

@@ -29,17 +29,15 @@ interface CalendarData {
 // ── Constantes ────────────────────────────────────────────────
 
 const BADGE_CLASS: Record<string, string> = {
-  PENDING:     "bg-sgl-gold/20 text-sgl-gold border border-sgl-gold/30",
-  CONFIRMED:   "bg-green-500/20 text-green-400 border border-green-500/30",
-  CANCELLED:   "bg-red-500/20 text-red-400 border border-red-500/30",
-  RESCHEDULED: "bg-sgl-gray-mid/20 text-sgl-gray-mid border border-sgl-gray-mid/30",
+  PENDING:   "bg-sgl-gold/20 text-sgl-gold border border-sgl-gold/30",
+  CONFIRMED: "bg-green-500/20 text-green-400 border border-green-500/30",
+  CANCELLED: "bg-red-500/20 text-red-400 border border-red-500/30",
 };
 
 const ESTADO_LABEL: Record<string, string> = {
-  PENDING:     "Pendiente",
-  CONFIRMED:   "Confirmado",
-  CANCELLED:   "Cancelado",
-  RESCHEDULED: "Reagendado",
+  PENDING:   "Pendiente",
+  CONFIRMED: "Confirmado",
+  CANCELLED: "Cancelado",
 };
 
 // Clases de grid explícitas para que Tailwind las incluya en el bundle

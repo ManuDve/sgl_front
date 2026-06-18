@@ -11,6 +11,7 @@ interface AppointmentSummary {
   hora: string;
   monto: number;
   estado: string;
+  reagendado: boolean;
 }
 
 type TabKey   = "all" | "pending" | "confirmed" | "cancelled";
@@ -25,17 +26,15 @@ const TABS: { key: TabKey; label: string; status: string }[] = [
 ];
 
 const BADGE_CLASS: Record<string, string> = {
-  PENDING:     "bg-sgl-gold/20 text-sgl-gold border border-sgl-gold/30",
-  CONFIRMED:   "bg-green-500/20 text-green-400 border border-green-500/30",
-  CANCELLED:   "bg-red-500/20 text-red-400 border border-red-500/30",
-  RESCHEDULED: "bg-sgl-gray-mid/20 text-sgl-gray-mid border border-sgl-gray-mid/30",
+  PENDING:   "bg-sgl-gold/20 text-sgl-gold border border-sgl-gold/30",
+  CONFIRMED: "bg-green-500/20 text-green-400 border border-green-500/30",
+  CANCELLED: "bg-red-500/20 text-red-400 border border-red-500/30",
 };
 
 const ESTADO_LABEL: Record<string, string> = {
-  PENDING:     "Pendiente",
-  CONFIRMED:   "Confirmado",
-  CANCELLED:   "Cancelado",
-  RESCHEDULED: "Reagendado",
+  PENDING:   "Pendiente",
+  CONFIRMED: "Confirmado",
+  CANCELLED: "Cancelado",
 };
 
 const PAGE_SIZES: PageSize[] = [10, 20, 50];
@@ -550,9 +549,16 @@ export default function AppointmentTable() {
                     <td className="px-4 py-3 text-sgl-white whitespace-nowrap">{formatHora(apt.hora)}</td>
                     <td className="px-4 py-3 text-sgl-white whitespace-nowrap">{formatMonto(apt.monto)}</td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${BADGE_CLASS[apt.estado] ?? BADGE_CLASS.PENDING}`}>
-                        {ESTADO_LABEL[apt.estado] ?? apt.estado}
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${BADGE_CLASS[apt.estado] ?? BADGE_CLASS.PENDING}`}>
+                          {ESTADO_LABEL[apt.estado] ?? apt.estado}
+                        </span>
+                        {apt.reagendado && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/15 text-blue-400 border border-blue-500/25">
+                            Reagendado
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
