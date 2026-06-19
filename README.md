@@ -4,9 +4,11 @@ Aplicación web del Sistema de Gestion Legal. Incluye el flujo publico de agenda
 
 ## Descripción del proyecto
 
-SGL es una Plataforma de Reserva y Coordinación Jurídica. El frontend tiene dos partes: el sitio público donde los clientes pueden agendar una consulta legal sin crear una cuenta, y el panel de administración donde el equipo del estudio gestiona agendamientos, confirma pagos y administra los servicios disponibles.
+SGL es una Plataforma de Reserva y Coordinación Jurídica. El frontend tiene tres partes: el sitio público donde los clientes pueden agendar una consulta legal sin crear una cuenta, un módulo para cancelar y reagendar consultas, y el panel de administración donde el equipo del estudio gestiona agendamientos, confirma pagos y administra los servicios disponibles.
 
 El flujo de agendamiento es un formulario de cuatro pasos que guía al cliente desde la selección del servicio hasta el resumen y la confirmación. El panel admin incluye filtros, exportación a CSV, calendario de citas y gestión de precios.
+
+El flujo de reagendamiento requiere requiere que el cliente incluya la ID única de su consulta y que confirme su correo y/o teléfono para recibir un código OTP de corta duración para validar y realizar la gestión.
 
 ## Tecnologías
 
